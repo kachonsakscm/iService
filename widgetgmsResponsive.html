@@ -1,0 +1,101 @@
+
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=11" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ทรู คอร์ปอเรชั่น | True Corporation</title>
+
+
+    <script src="https://survey.truecorp.co.th/web/jquery-1.11.1.min.js"></script> 
+	<!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/font-awesome.min.css" /> -->
+	<!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/reset-min.css" /> -->
+    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/owl.carousel.css" /> -->
+    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/animate.css" /> -->
+    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/jquery.scrollbar.css" /> -->
+    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/main.css" /> -->
+    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/toggle-colors.css" /> -->
+	
+	<link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/reset-min.css">
+    <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/owl.carousel.css">
+    <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/animate.css">
+    <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/jquery.scrollbar.css">
+    <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/main.css">
+    <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/toggle-colors.css">
+    
+	
+
+    <!-- <script src="https://survey.truecorp.co.th/web/responsive/jquery-1.11.1.min.js"></script> -->
+	<script src="https://survey.truecorp.co.th/web/responsive/configResponsive.js"></script>
+    <script src="https://survey.truecorp.co.th/web/responsive/widgetonloaduiResponsive.js"></script>
+	
+
+
+</head>
+
+<body class="background">
+
+                             
+
+
+
+
+		<form id="formchat" style="display:none;" >
+		<input type="hidden" name="firstName"/>
+		<input type="hidden" name="lastName"/>
+		<input type="hidden" name="Subject"/>
+		<input type="hidden" name="userData['Product']" id="Product"/>
+		<input type="hidden" name="userData['user_intent']" id="user_intent"/>
+		<input type="hidden" name="userData['Service_number']" id="Service_number" />
+		<input type="hidden" name="userData['GCTI_LanguageCode']" id="GCTI_LanguageCode" />
+		<input type="hidden" id="SubmitterSourceName" name="userData['SubmitterSourceName']" value="iservice_" />
+		<div class="wgbackground">
+		<div id="wgChatbox" class="wgChatbox hide">
+			<div class="comfirm-end-background hide"></div>
+			<div class="comfirm-end-box hide">
+				<div class="comfirm-end-inside">
+					<p><span name="text-comfirm-end"></span></p><br>
+					<center>
+					<button type='button' class='btn-in-chat' id="btn-cancel" name="btn-cancel" onclick='closeConfirmEnd();' style="display:none" >OK</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type='button' class='btn-in-chat' id="btn-end" name="btn-end" onclick='endChat();' style="display:none" ></button>
+					<button type='button' class='btn-in-chat' id="btn-email" name="btn-email" onclick='openemail();' style="display:none" ></button>
+					</center>
+				</div>
+			</div>
+			<!-- <div class="wgChatbox-head"> -->
+				<!-- <span class="span1"><span class="span1-1"><img src="https://survey.truecorp.co.th/web/responsive/img/mari.png"></span></span> -->
+				<!-- <span class="span2"><span class="span2-1">Live Chat</span></span> -->
+				
+			<!-- </div> -->
+			<div class="wgChatbox-body">
+				<div id="chat-history" class="chat-history">
+					<ul id="ul-history" class="ul-history"></ul>
+				</div>
+			</div>
+			<div class="emoji-chat" id="emoji-chat">
+				<div class="cx-emoji-menu cx-theme" id="wg-emoji" style="display: block;">
+				</div>
+			</div>
+			<div class="wgChatbox-footer">
+				<span class="span1">
+					<button type='button' id="btn-emoji" class="btn-none-style" onclick='clickemoji();'>
+						<img src="https://survey.truecorp.co.th/web/img/emoji.png" class="imgemoji" width="25" height="25"/>
+					</button></span>
+					<span class="span4">
+					<input type='file' id='uploadfile' onchange='attach(this.files);' style='display:none;'/>
+					<img src="https://survey.truecorp.co.th/web/img/attach.png" id="uploadfile" class="imgfile" onclick="$('#uploadfile').click();" style="cursor:pointer;" width="20" height="20"  />
+					</span>
+				<span class="span2"><textarea placeholder="Type your massage" id="messagechat" name="messagechat" rows="1"></textarea></span>
+				<span class="span3">
+					<button type='button' id="btn-Send" class="btn-none-style" onclick='sendMsg();'>
+						<img src="https://survey.truecorp.co.th/web/img/cursor.png"/ class="imgsend">
+					</button>
+				</span>
+			</div>
+		</div>
+		</div>
+	</form>
+
+</body>
+</html>
