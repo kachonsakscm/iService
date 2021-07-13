@@ -24,6 +24,7 @@ var chat ;
 var user;
 var device = "";
 var paramdevice = {};
+var indexTold = "0";
 
 function getdevice(){
 		var url=decodeURIComponent(window.location.href).replace( /\+/g, ' ' );
@@ -43,39 +44,54 @@ if(window.innerWidth <= 1000)
 		if(device == "ios" || device == "android")
 		{
 			var wgScript = [
-				{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
-				{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
-				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileapp.css"}	
+				// {type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+				// {type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
+				// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileapp.css"}	
+				{type:"script",	id:"chatapi",		path:"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:"truewebchat_widgetResponsive.css"}	
 			];
 		}else if(device == "trueyou")
 		{
 			var wgScript = [
-					{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
-					{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
-					{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+					// {type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+					// {type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+					// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+					{type:"script",	id:"chatapi",		path:"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:"truewebchat_widgetResponsive.css"}	
 				];
 		}else if(device == "mobile")
 		{
 			var wgScript = [
-					{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
-					{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
-					{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileweb.css"}	
+					// {type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+					// {type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+					// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileweb.css"}	
+					{type:"script",	id:"chatapi",		path:"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:"truewebchat_widgetResponsive.css"}	
 				];
 		}else
 		{	 
 			var wgScript = [
-				{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
-				{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
-				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+				// {type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+				// {type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+				// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+				{type:"script",	id:"chatapi",		path:"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:"truewebchat_widgetResponsive.css"}	
 			];
 		}
 	}
 else if(window.innerWidth > 1000)
 {	
 	var wgScript = [
-			{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
-			{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
-			{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+			// {type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+			// {type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
+			// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+			{type:"script",	id:"chatapi",		path:"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:"truewebchat_widgetResponsive.css"}	
 		];
 }
 
@@ -109,7 +125,10 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "SystemMessageinformEWT":"รอสักครู่นะคะ เวลารอโดยประมาณคือ 15 นาทีค่ะ",
 "AskSMS":"กรอกเบอร์โทรศัพท์ทรูมูฟเอช เพื่อให้ระบบส่ง SMS แจ้งเตือนเมื่อใกล้ถึงคิวของคุณ",
 "ConfirmSMSnumber":"เมื่อใกล้ถึงคิวของคุณ ระบบจะส่ง SMS แจ้งเตือนไปที่เบอร์ ",
-"ChatStarted":"เพื่อความรวดเร็ว คุณสามารถตรวจสอบข้อมูลต่างๆ ด้วยตัวเองได้ง่ายๆ โดยการใช้งานระบบอัตโนมัติ ผ่าน <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> หรือ Application TrueiService ซึ่ง download ได้จาก App Store สำหรับ ios หรือ Play Store สำหรับ Android ระบบกำลังส่งข้อมูลไปยังเจ้าหน้าที่ค่ะ",
+// "ChatStarted":"เพื่อความรวดเร็ว คุณสามารถตรวจสอบข้อมูลต่างๆ ด้วยตัวเองได้ง่ายๆ โดยการใช้งานระบบอัตโนมัติ ผ่าน <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> หรือ  Mari Line เพิ่มเพื่อนที่ ID Line : @truemoveh <a href='https://line.me/R/ti/p/@659adtzb' target='_blank'>bit.ly/2xbJfMy </a>",
+// "ChatStarted":"เพื่อความรวดเร็ว คุณสามารถตรวจสอบข้อมูลต่างๆ ด้วยตัวเองได้ง่ายๆ โดยการใช้งานระบบอัตโนมัติ ผ่าน <a href='https://bit.ly/iservice-home' target='_blank'>https://bit.ly/iservice-home</a> หรือ Mari Line เพิ่มเพื่อนที่ ID Line : @truemoveh <a href='https://line.me/R/ti/p/@659adtzb' target='_blank'>bit.ly/NVmariline </a>",
+//"ChatStarted":"เพื่อความรวดเร็ว คุณสามารถตรวจสอบข้อมูลต่างๆ ด้วยตัวเองได้ง่ายๆ โดยการใช้งานระบบอัตโนมัติ ผ่าน <a href='https://bit.ly/iservicenv' target='_blank'>https://bit.ly/iservicenv</a> หรือ Mari Line เพิ่มเพื่อนที่ ID Line : @truemoveh <a href='https://line.me/R/ti/p/@659adtzb' target='_blank'>bit.ly/marilinenv </a>",
+"ChatStarted":"เพื่อความรวดเร็วคุณสามารถตรวจสอบข้อมูลยอดค้าง เปลี่ยนแพ็กเกจ สมัครแพ็กเสริม ด้วยตัวเองได้ที่ True iService คลิก <a href='https://bit.ly/iservice-home' target='_blank'>https://bit.ly/iservicenv</a>",
 "endchat":"ขอบคุณที่ใช้บริการทรู แคร์ แชทค่ะ",
 "startchat1":"พิมพ์ข้อความที่นี",
 "btn_q":"ตกลง",
@@ -129,7 +148,11 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "iserviceendchat":"หากต้องการสนทนาอีกครั้ง กรุณากดย้อนกลับและทำรายการใหม่อีกครั้ง",
 "btniserviceendchat":"เริ่มต้นสนทนาอีกครั้ง",
 "phonenumber":"กรุณาตรวจสอบหมายเลขโทรศัพท์ของท่าน",
-"EWT":"คุณจะได้รับบริการใน _X_ นาที หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือสามารถเลือกทำรายการอื่นได้ค่ะ",
+// "EWT":"คุณจะได้รับบริการใน _X_ นาที หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือสามารถเลือกทำรายการอื่นได้ค่ะ",
+//"EWT":"ขณะนี้มีผู้รับบริการเป็นจำนวนมาก หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือสามารถเลือกทำรายการอื่นได้ค่ะ",
+//"EWT":"ขณะนี้มีผู้รับบริการเป็นจำนวนมาก หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือตรวจสอบข้อมูลด้วยตัวเองผ่าน Mari Line เพิ่มเพื่อนที่ ID Line : @truemoveh <a href='https://bit.ly/marilinenv' target='_blank'>https://bit.ly/marilinenv</a> ได้ค่ะ",
+"EWT":"ขณะนี้มีผู้รับบริการเป็นจำนวนมาก หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือตรวจสอบข้อมูลด้วยตัวเองได้ที่ True iService คลิก <a href='https://bit.ly/iservice-home' target='_blank'>https://bit.ly/iservicenv</a>",
+"LessEWT":"กรุณารอสักครู่ค่ะ คุณจะได้รับบริการประมาณ _X_ นาที ",
 "ChatEndQuestion":"ต้องการสิ้นสุดการสนทนาหรือไม่?",
 "CancelChatEnd":"ต้องการสิ้นสุดรายการสนทนาหรือไม่?",
 "EmailChatEnd":"ต้องการส่งอีเมลหรือไม่?",
@@ -179,7 +202,10 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "alerthistorynotrequest":"กรุณารอเจ้าหน้าที่ตอบกลับสักครู่ค่ะ ",
 "alerthistorynoserviceid":"กรุณา Log in เพื่อดูประวัติสนทนา",
 "alerthistoryendchat":"ไม่สามารถดูประวัติสนทนาได้ หากยังไม่ได้คลิกปุ่มเริ่มต้นสนทนา ",
-"alertoldhistory":"ไม่สามารถแสดงรายการของก่อนวันที่ "
+"alertoldhistory":"ไม่สามารถแสดงรายการของก่อนวันที่ ",
+"alertnohistory":"ไม่พบประวัติการสนทนา",
+"SplashMessage":"ระหว่างรอเจ้าหน้าที่เข้าสู่การสนทนา คุณสามารถใช้งานเว็บไซต์หรือแอปพลิเคชันอื่นได้ตามปกติ โดยเปิดแชทไว้เพื่อความสะดวกในการสนทนากับเจ้าหน้าที่ได้อย่างต่อเนื่อง",
+"MA":"เพื่อเพิ่มประสิทธิภาพการบริการให้ดียิ่งขึ้น ระบบทรู แคร์ แชท ต้องปิดปรับปรุงระบบระหว่างวันที่ 22 ธันวาคม 2563 เวลา 00:10 ถึง 01:00 หากท่านต้องการรับบริการ กรุณาติดต่อกลับมาใหม่ ขออภัยในความไม่สะดวกมา ณ ที่นี้ค่ะ  <br><br><br> True will be upgrading True Care Chat system to improve service quality during 2 December 2020 00:10 - 01:00. If you need our assistant, please contact us again. True sincerely apologize for any inconvenience may cause."
 }; 
  var dataMessageEN={
 "Greeting":"สวัสดีค่ะ ทรูแคร์แชทยินดีให้บริการค่ะ . Hello welcome to True Care Chat service. ",
@@ -193,7 +219,8 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "AskSMS":"Please identify TrueMove H mobile number to receive an SMS alert when you are first in the queue. ",
 "ConfirmSMSnumber":"SMS alert will be sent to ",
 "Textsent":"Type your message... ",
-"ChatStarted":"For speedy service,  you can check various information by yourself easily by using automated systems via <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> or Application TrueiService which can be downloaded from App Store for ios or Play Store for Android. Information is being transferred to one of our customer representatives.",
+//"ChatStarted":"For speedy service,  you can check various information by yourself easily by using automated systems via <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> or Application TrueiService which can be downloaded from App Store for ios or Play Store for Android. Information is being transferred to one of our customer representatives.",
+"ChatStarted":"Check your outstanding balance, Change package, or Apply for add-on packages by yourself in True iService app, click <a href='https://bit.ly/iservice-home' target='_blank'>https://bit.ly/iservicenv</a>",
 "btn_q":"OK",
 "btn_ok":"OK",
 "btn_end":"End Chat",
@@ -210,7 +237,11 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "iserviceendchat":"If you wish to continue the conversation, please press 'return' to make the transaction again.",
 "btniserviceendchat":"Start chatting again",
 "phonenumber":"Please check your telephone number.",
-"EWT":"Your request chat will be responded in _X_ mins. Choose 'OK' to continue waiting in the line, or end email instead",
+// "EWT":"Your request chat will be responded in _X_ mins. Choose 'OK' to continue waiting in the line, or end email instead",
+//"EWT":"There are many customers on the line. To continue the service, please select 'OK' or check the information by yourself via Mari Line. Add friends at ID Line: @truemoveh <a href='https://bit.ly/marilinenv' target='_blank'>https://bit.ly/marilinenv</a>",
+"EWT":"Currently, there are many customers contacting, if you wish to continue waiting, please select 'OK' or you can check information by yourself via True iService click, <a href='https://bit.ly/iservice-home' target='_blank'>https://bit.ly/iservicenv</a>",
+//"LessEWT":"You will receive the service in the next _X_ minutes or check the information by yourself via Mari Line. Add friends at ID Line: @truemoveh <a href='https://bit.ly/marilinenv' target='_blank'>https://bit.ly/marilinenv</a>",
+"LessEWT":"One moment please... Your chat will be answered in _X_ minutes.",
 "ChatEndQuestion":"To end the conversation?",
 "CancelChatEnd":"To continue waiting in the line?",
 "EmailChatEnd":"To send email?",
@@ -260,7 +291,10 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "alerthistorynoserviceid":"Please log in to see the Chat history.",
 "alertoldhistory":"Cannot display items before ",
 "alerthistoryendchat":"can not see history . Please Click the start conversation button.",
-"tabmessagehistoryfirst":"Checking conversation"
+"tabmessagehistoryfirst":"Checking conversation",
+"alertnohistory":"Chat Histoty not found.",
+//"SplashMessage":"Currently, there are  many customers contacting us. Please do not close the chat screen."
+"SplashMessage":"Please keep your chat box open while waiting for the staff to enter the live chat. You can still use other websites or applications as usual."
  };
 
  
@@ -411,7 +445,7 @@ var timeReadCsv = 500;
 var timeChSelect = 180000;
 var prodIntention = [];
 var webSystax = ["http://","https://","\\.co","\\.th","www\\."];
-var ewttime = 0;  //3600
+var ewttime = 900;  //3600
 var bul = 0;
 var listproduct = [{id:"TMH",	value:"TrueMoveH"},
 	{id:"TVS",	value:"TrueVision"},
@@ -421,7 +455,7 @@ var listproduct = [{id:"TMH",	value:"TrueMoveH"},
 var internet = true;
 var userintention = "";
 var url1 = "";
-var timeSms = 30000;
+var timeSms = 180000;
 var timehis = 3;
 var titlenoti = "ทดสอบ";
 var bodynoti = "ระบบ";
@@ -523,3 +557,6 @@ var Hisuser = "histest";
 var Hispass = "password";
 var verify = "Z25z";
 var checkfiletype = false;
+var checkmessage = "";
+var MA = false;
+var checkrefreshchat = false;

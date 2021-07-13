@@ -5,13 +5,25 @@ var oAction = {
 	MsgTemplate: function(message) {}
 }
 
-function createMessage(msgFrom,msgText,redate){
+function createMessage(msgFrom,msgText,TimeMessage,redate){
+	console.log(TimeMessage);
 	if(redate == "history")
 	{
 		wgDateMessage="";
 	}else
 	{
-		wgDateMessage = createWgDateMessage();
+		// if(TimeMessage != undefined)
+		// {
+			// TimeMessage = String(TimeMessage);
+			// var NTimeMessage = TimeMessage.substring(0,TimeMessage.length-3);
+			// NTimeMessage = parseInt(NTimeMessage);
+			// var myDate = new Date(NTimeMessage*1000);
+			// wgDateMessage = myDate.toGMTString()+"<br>"+myDate.toLocaleTimeString();
+		// }
+		// else
+		// {
+		wgDateMessage = createWgDateMessage(TimeMessage);
+		// }
 	}
 	
 	var listChat  = wgAction.createElement(tagList);
@@ -146,10 +158,20 @@ function displayUserIntention(msgFrom,msgText){
 	}
 }
 
-function createWgDateMessage(){
+function createWgDateMessage(TimeMessage){
 	var returnDate;
-	var testtime;
-	var today  = new Date();
+	var testtime;	
+	if(TimeMessage != undefined)
+	{
+		TimeMessage = String(TimeMessage);
+		var NTimeMessage = TimeMessage.substring(0,TimeMessage.length-3);
+		NTimeMessage = parseInt(NTimeMessage);
+		var today = new Date(NTimeMessage*1000);
+	}
+	else
+	{
+		var today  = new Date();
+	}	
 	returnDate = ((today.getHours() < 13) ? today.getHours() : (today.getHours() - 12))+ ":" 
 	+(((today.getMinutes() < 10)? "0" : "")+today.getMinutes()+" "+((today.getHours() < 12) ? "AM" : "PM"));
 	testtime = ((today.getMinutes() < 10)? "0" : "");
@@ -576,7 +598,8 @@ function createEmail(msgFrom){
 	
 }
 	$( "#chat-history" ).scroll(function() {
-		if($("#chat-history").scrollTop() == 0 && serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin) {	
+		if($("#chat-history").scrollTop() == 0 && serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin && viewhistory != true) {	
+			viewhistory = true;
 				$(".comfirm-end-background").removeClass("hide");
 				document.getElementById("imgloader").style.display = "block";
 						setTimeout(function() { 
@@ -599,7 +622,7 @@ function createEmail(msgFrom){
 						},timereload);
 		   
 		}
-	else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
+		else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
 		{
 			
 		}
@@ -623,30 +646,31 @@ function createEmail(msgFrom){
 	});
 	
 	function stephistory(){
-	  if(serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin) 	
-	  {
-			$(".comfirm-end-background").removeClass("hide");
-					document.getElementById("imgloader").style.display = "block";
-							setTimeout(function() { 
-								var list = document.getElementById("ul-history").childNodes;	
-								var numui = document.getElementById("ul-history").childNodes.length;
-								for(var i=0;i<numui;i++)
+  if(serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin && viewhistory != true) 	
+  {
+		viewhistory = true;
+		$(".comfirm-end-background").removeClass("hide");
+				document.getElementById("imgloader").style.display = "block";
+						setTimeout(function() { 
+							var list = document.getElementById("ul-history").childNodes;	
+							var numui = document.getElementById("ul-history").childNodes.length;
+							for(var i=0;i<numui;i++)
+							{
+							if((i+1) == numui)
 								{
-								if((i+1) == numui)
+									if(rehistory == 0)
 									{
-										if(rehistory == 0)
-										{
-											rehistory = parseInt(rehistory) + 2;
-										}else
-										{
-											rehistory = parseInt(rehistory) + 1;
-										}										
-										oChat.chathisrotyview("ทดสอบยิงapi");
-									}
+										rehistory = parseInt(rehistory) + 2;
+									}else
+									{
+										rehistory = parseInt(rehistory) + 1;
+									}										
+									oChat.chathisrotyview("ทดสอบยิงapi");
 								}
-							},timereload);
-	  }
-	else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
+							}
+						},timereload);
+  }
+  else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
 		{
 			
 		}
@@ -654,15 +678,15 @@ function createEmail(msgFrom){
 		{
 			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynoserviceid"]);
 		}
-	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && oChatStart == true && !agentjoin)
+	else if($("#chat-history").scrollTop() == 0 &&serviceid != "" && oChatStart == true && !agentjoin)
 		{
 			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynotrequest"]);
 		}
-	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && end == true)
+	else if($("#chat-history").scrollTop() == 0 &&serviceid != "" && end == true)
 		{
 			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistoryendchat"]);
 		}
-	// else if($("#chat-history").scrollTop() == 0 && (serviceid == ""||serviceid != "") ||( end == true )&& oChatStart != true && !agentjoin)
+	  // else if($("#chat-history").scrollTop() == 0 && (serviceid == ""||serviceid != "") ||( end == true )&& oChatStart != true && !agentjoin)
 		// {
 			// onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistory"]);
 		// }

@@ -22,6 +22,9 @@
 	var serviceid = "" ;
 	var fileName = [""];
 	var dateold = "";
+	var SplashMessagefrist = true;
+	var viewhistory = false;
+	
 	
 	window.onload = function() {
 		
@@ -67,7 +70,8 @@
 		  d.setTime();		
 		  b.setTime(b.getTime() );	  
 		  var expires = "expires=" + d.toGMTString();		
-		  var expiresb = "expires=" + b.toGMTString();			
+		  var expiresb = "expires=" + b.toGMTString();		
+		  		  
 		  document.cookie ="";		
 	}		
 			
@@ -78,12 +82,14 @@
 		  b.setTime(b.getTime() );		
 		  var expires = "expires=" + d.toGMTString();		
 		  var expiresb = "expires=" + b.toGMTString();	
+		  
 		 document.cookie = "UserId" + "=" + UserId + "," +"ChatId" + "=" + ChatId + "," +"SecureKey" + "=" + SecureKey+ "," +"Alias" + "=" + Alias + "," +"TranscriptPosition" + "=" + TranscriptPosition + "," +"rehistory" + "=" + rehistory + "," +"tokendownload" + "=" + tokendownload + "," +"tokenhistory" + "=" + tokenhistory + "," +"language" + "=" + wgLanguage + "," +cname + "=" + cvalue + ";" + expires + ";path=/";	
 	
 	}		
 	function getCookie(cname) {		
 		  var name = cname + "=";				
 		  var decodedCookie = decodeURIComponent(document.cookie);		
+		  
 		  var ca = decodedCookie.split(';');
 		  var c = "";		
 		  for(var i = 0; i < ca.length; i++) {		
@@ -107,6 +113,7 @@
 		}		
 	function checkCookie() {		
 		  user=getCookie("username");	
+		  
 		    if (user != "") {		
 				user = user.split(',');			
 				for(var j=0;j<user.length; j++)		
@@ -132,7 +139,7 @@
 	
 	function getpara(){
 		var url=decodeURIComponent(window.location.href).replace( /\+/g,'');
-		  // alert(url);
+		 // alert(url);
 		var urlStep1 = url.split("?");
 		if(urlStep1.length > 1){
 			var urlStep2 = urlStep1[1].split("&");
@@ -145,6 +152,8 @@
 		 {
 			 $("input[id=Service_number]").val(paramUrl['service_id']);
 			 serviceid = paramUrl['service_id'];
+			 // $("input[id=Service_number]").val("0812222488");
+			 // serviceid = "0812222488";
 		 }
 		userintention = paramUrl['UserIntention'];
 		if(paramUrl['Channel'])
@@ -212,6 +221,10 @@
 		document.getElementById("messagechat").placeholder = wgSystem[wgLanguage]["messageresponse"]["Textsent"];
 	}
 	function openForm(){
+			$('#uploadfile').prop('disabled',true);
+			$('.imgfile').toggle(false); 
+			// $('#uploadfile').toggle(false); 
+			// document.getElementById("uploadfile").style.display = "none";
 			createBtnInChathistory(wgBtntabmessagehistoryfirst);
 			createMessagehistory(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["tabmessagenow"]); 
 			end = false;
@@ -258,6 +271,7 @@
 	}
 	
 	function reloadWeb(){
+
 		setTimeout(function(){
 					window.location.reload(true);
 				},3000);
@@ -353,7 +367,7 @@
 	}
 	
 	function onMessageAlert(data){
-		
+	
 		if((internet || firstmessage) && dateold == "")
 		{	
 			$(".comfirm-end-background").removeClass("hide");
@@ -425,7 +439,7 @@
 						oChat.sendMessage(text);	
 			}
 		},timeReadCsv);
-		
+		selecInten = true;	
 	}
 	
 	function isBlankSetAnonymous(val){
@@ -448,7 +462,6 @@
 			selecInten = true;			
 			focusScrollwgChatbox();
 		}
-		
 	}
 	
 	function selectEmoji(pin,txt){	
@@ -459,30 +472,40 @@
 	}
 
 	function requestChat(){
+		
 		if(chat != "ChatCookie")
 		{
 			$("input[name=firstName]").val(isBlankSetAnonymous($('input[name=firstName]').val()));
 			$("input[name=lastName]").val(isBlankSetAnonymous($('input[name=lastName]').val()));
 			var formchat = $('#formchat').serialize();
-			oChat = new ChatFactory({
-				baseURL: apiServer,//PRODUCTION URL
-				chatServiceName: gmschat,
-				useCometD: false,
-				verbose: true,
-				debug:true,
-				onStarted: onStarted,
-				onEnded: onEnded,
-				<!-- onFileSent: onFileSent, -->
-				onMessageReceived: onMessageReceived,
-				onFileReceived: onFileReceived,
-				onError: onError,
-				onDownloadFile:onDownloadFile,
-				onDownloadFileIE:onDownloadFileIE,
-				onMessageAlert:onMessageAlert
-			});
+			try
+			{
+				oChat = new ChatFactory({
+					baseURL: apiServer,//PRODUCTION URL
+					chatServiceName: gmschat,
+					useCometD: false,
+					verbose: true,
+					debug:true,
+					onStarted: onStarted,
+					onEnded: onEnded,
+					<!-- onFileSent: onFileSent, -->
+					onMessageReceived: onMessageReceived,
+					onFileReceived: onFileReceived,
+					onError: onError,
+					onDownloadFile:onDownloadFile,
+					onDownloadFileIE:onDownloadFileIE,
+					onMessageAlert:onMessageAlert
+				});
+			}
+			catch(err) {
+				alert(err);
+			}
+			
 			// Start the chat using the variable in form.
+			// alert("!startChat");
 			oChat.startChat(formchat);
 			createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["ChatStarted"]);
+			
 			setTimeout(function(){
 				if(firstmessage == true)
 				{
@@ -493,22 +516,28 @@
 		}else if(chat == "ChatCookie")
 		{
 			var formchat = "ChatCookie";
-			oChat = new ChatFactory({
-				baseURL: apiServer,//PRODUCTION URL
-				chatServiceName: gmschat,
-				useCometD: false,
-				verbose: true,
-				debug:true,
-				onStarted: onStarted,
-				onEnded: onEnded,
-				<!-- onFileSent: onFileSent, -->
-				onMessageReceived: onMessageReceived,
-				onFileReceived: onFileReceived,
-				onError: onError,
-				onDownloadFile:onDownloadFile,
-				onDownloadFileIE:onDownloadFileIE,
-				onMessageAlert:onMessageAlert
-			});
+			try
+			{
+				oChat = new ChatFactory({
+					baseURL: apiServer,//PRODUCTION URL
+					chatServiceName: gmschat,
+					useCometD: false,
+					verbose: true,
+					debug:true,
+					onStarted: onStarted,
+					onEnded: onEnded,
+					<!-- onFileSent: onFileSent, -->
+					onMessageReceived: onMessageReceived,
+					onFileReceived: onFileReceived,
+					onError: onError,
+					onDownloadFile:onDownloadFile,
+					onDownloadFileIE:onDownloadFileIE,
+					onMessageAlert:onMessageAlert
+				});
+			}
+			catch(err) {
+				alert(err);
+			}
 			// Start the chat using the variable in form.
 			
 				oChat.startChat(formchat);
@@ -531,9 +560,10 @@
 		oChatStart = false;
 	}
   
-  function onMessageReceived(typeFrom,typeMsg,nickname,textMsg,chatend) {
+  function onMessageReceived(typeFrom,typeMsg,nickname,textMsg,chatend,indexT,indexTO,timeM) {
 		var msg = "";
-		
+		// alert("typeFrom : "+typeFrom+" textMsg : "+textMsg+" chatend : "+chatend+" indexT : "+indexT+" indexTO : "+indexTO+" timeM : "+timeM);
+		console.log("typeFrom : "+typeFrom+" textMsg : "+textMsg+" chatend : "+chatend+" indexT : "+indexT+" indexTO : "+indexTO+" timeM : "+timeM);
 		if ( typeMsg === 'Message' || typeMsg === 'Message.Text' ) {
 			var n = textMsg.search("http");
 			if(n>1)
@@ -578,11 +608,14 @@
 
 			if( typeFrom === "Agent")
 			{
-				// oChat.notiinapp(noti);
+				 oChat.notiinapp(noti);
 				agentjoin = true;
+				$('#uploadfile').prop('disabled', false);
+				$('.imgfile').toggle(true); 
+				 // document.getElementById("uploadfile").style.display = "block";
 			}
 			msg = wgSystem[wgLanguage]["messageresponse"]["Joinedchat"];
-			$('#uploadfile').prop('disabled', false);
+			
 		} else if ( typeMsg === 'ParticipantLeft' || typeMsg === 'Notice.Left') {
 			msg = wgSystem[wgLanguage]["messageresponse"]["Leftchat"];
 		} else if ( typeMsg === 'PushUrl' || typeMsg === 'PushUrl.Text' ) {
@@ -594,34 +627,51 @@
 		if(typeFrom === "Client" && typeMsg === "TypingStopped") return;
 		if(typeFrom === "Client" && msg === "read-confirm") return;
     
-    if(typeFrom === "Agent" && typeMsg === "TypingStarted"){
-		if(!document.getElementById('liTyping')){
-			typingMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["typing"]);
+		if(typeFrom === "Agent" && typeMsg === "TypingStarted"){
+			if(!document.getElementById('liTyping')){
+				typingMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["typing"]);
+			}
+		  return false;
 		}
-      return false;
-    }
-    
-    if(typeFrom === "Agent" && typeMsg === "TypingStopped"){
-		removeTyping();
-		return false;
-    }
+		
+		if(typeFrom === "Agent" && typeMsg === "TypingStopped"){
+			removeTyping();
+			return false;
+		}
     
 		if(typeFrom === "Client"){
 			if(msg == wgSystem[wgLanguage]["messageresponse"]["Joinedchat"]  )
-				{
-					
-					$('#uploadfile').prop('disabled', false);
+				{					
+					$('#uploadfile').prop('disabled', true);
 				 	return;
 				}
-				if(firstmessage == true)
+			if(firstmessage == true)
 				{
+					// alert("firstmessage : ",firstmessage);
 					firstmessage = false;
+					checkmessage = msg;
 				}
-			 else if(firstmessage == false)
-				 {
+			else if(firstmessage == false && indexT != indexTO)
+				{
 					
-					createMessage(wgMsgCustomer,msg); 
-				 }
+					// if(msg.search(checkmessage) != 0)
+					// {
+						// alert("msg.search(checkmessage) != 0");
+						createMessage(wgMsgCustomer,msg,timeM); 
+						checkmessage = msg;
+					// }
+				}
+			// else if(firstmessage == false)	
+				 // {	
+					// if(msg == wgSystem[wgLanguage]["messageresponse"]["SplashMessage"] && SplashMessagefrist == true)	
+					// {	
+						// SplashMessagefrist = false;	
+					// }	
+					// else if((msg == wgSystem[wgLanguage]["messageresponse"]["SplashMessage"] && !SplashMessagefrist) || msg != wgSystem[wgLanguage]["messageresponse"]["SplashMessage"])	
+					// {	
+						// createMessage(wgMsgCustomer,msg); 	
+					// }	
+				 // }
 			
 		} else if(typeFrom === "Agent"){
 			if((msg == wgSystem[wgLanguage]["messageresponse"]["Leftchat"] && chatend == true)||(chatend == true)){
@@ -630,14 +680,16 @@
 				$('#btn-emoji').prop('disabled', true);
 				document.getElementById("btn-emoji").disabled = true;
 				$('#messagechat').prop('disabled', true);
-				createMessage(wgMsgAgent,msg);
+				$('.imgfile').toggle(false); 
+				createMessage(wgMsgAgent,msg,timeM);
 				ClearCookie();
 				setCookie("username", user, 0.00001);
 				rehistory=0;
-				setTimeout(function(){
-					createBtnReChat(wgBtnChat);
-					$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
-				}, 2000);  
+				SplashMessagefrist = true;
+				// setTimeout(function(){
+					// createBtnReChat(wgBtnChat);
+					// $('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
+				// }, 2000);  
 				
 			}
 			if(isewt == true)
@@ -646,7 +698,7 @@
 				if(document.getElementById('li-btn-selecter') != null && chanelselect == true )
 				{
 					document.getElementById('li-btn-selecter').parentNode.removeChild(document.getElementById('li-btn-selecter'));
-					createMessage(wgMsgAgent,msg);
+					createMessage(wgMsgAgent,msg,timeM);
 					isewt = false;
 					chanelselect = false;
 				}else if($("#li-btn-sms") && isewt && chanelselect == false){
@@ -654,16 +706,21 @@
 					if(document.getElementById('li-btn-sms') != null){
 					document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));	
 					}
-					createMessage(wgMsgAgent,msg);
+					createMessage(wgMsgAgent,msg,timeM);
 					isewt = false;
 					
 				}				
 			}
 			
-			else if(msg != wgSystem[wgLanguage]["messageresponse"]["Leftchat"] && chatend == false)
+			else if(msg != wgSystem[wgLanguage]["messageresponse"]["Leftchat"] && chatend == false && indexT != indexTO)
 			{
-				removeTyping();
-				createMessage(wgMsgAgent,msg);
+				// if(msg.search(checkmessage) != 0)
+					// {
+						removeTyping();
+						createMessage(wgMsgAgent,msg,timeM);
+						checkmessage = msg;
+						SplashMessagefrist = true;
+					// }	
 			}
 			
 		} else if(typeFrom === "External"){
@@ -671,20 +728,39 @@
 			if(msg.search("VQ_")>=0)
 			{	var obj= {};
 				obj = msg.split(",");
-				
+				console.log("EWT");
 				 if(obj[1] > ewttime && chat != "ChatCookie")   //ewttime
-				 {
-					 
-					timefilter(msg);
+				 { 
 					isewt = true;
+					timefilter(msg);
+					
+				 }
+				 else if(obj[1] < ewttime && chat != "ChatCookie")
+				 {
+					 timefilter(msg);
+					 // createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["LessEWT"],timeM);
 				 }
 			}else if(msg == wgSystem[wgLanguage]["messageresponse"]["Joinedchat"]){
 				
 				return;
 			}else{
+				console.log("isewt : ",isewt);
+				console.log("msg : ",msg);
+				console.log("msg : ",wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]);
 				if(!isewt && msg != "")
-				{
-					createMessage(wgMsgMariload,msg);
+				{		
+					console.log("search : ",msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]));
+					if(msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]) == 0  && SplashMessagefrist == true)
+					{
+						 alert("เข้า SplashMessagefrist");
+						createMessage(wgMsgMariload,msg,timeM);
+						SplashMessagefrist = false;				
+					}
+					else if(msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]) != 0 && SplashMessagefrist == false)
+					{
+						 alert("เข้า SplashMessagenotfrist");
+						createMessage(wgMsgMariload,msg,timeM);
+					}							
 				}
 				else
 				{
@@ -695,7 +771,7 @@
 		}
 	}
   
-	function onFileReceived(typeFrom,nickname,udata,statustype) {
+	function onFileReceived(typeFrom,nickname,udata,statustype,timeM) {
 		var msg = "";
 		var filesize = (parseInt(udata["file-size"])/1024).toFixed(2);
 		fileName.push(udata["file-name"]);
@@ -731,12 +807,12 @@
 			// }
 			
 		if(typeFrom === "Client"){
-			createMessage(wgMsgCustomer,msg); 
+			createMessage(wgMsgCustomer,msg,timeM); 
 		} else if(typeFrom === "Agent"){
 			removeTyping();
-			createMessage(wgMsgAgent,msg);
+			createMessage(wgMsgAgent,msg,timeM);
 		} else if(typeFrom === "External"){
-			createMessage(wgMsgMari,msg);
+			createMessage(wgMsgMari,msg,timeM);
 		}
 	}
 	
@@ -753,11 +829,12 @@
 	function onDownloadFile(data,filename,userId,secureKey,alias,baseURL,chatServiceName,chatId,fileId){
 		if(paramUrl['Channel'] == "web")
 		{
+			// alert("เข้าดาวน์โหลด");
 			 var spt = filename.split(".");			 
 			 download(b64toBlob2(data, wgMimeType[spt[spt.length-1].toLowerCase()]), fileName[filename], wgMimeType[spt[spt.length-1].toLowerCase()]);
 		 }else
 		{
-			 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || paramUrl['Channel'] == "android") {
+			 if(paramUrl['Channel'] == "android") {
 				var spt = filename.split(".");
 				var downloadurl = wgServer+'/downloadfile.html?fileId='+data+'&filename='+fileName[filename]+'&Tfile='+tokendownload+'&filetype='+wgMimeType[spt[spt.length-1].toLowerCase()]+'&';
 
@@ -801,11 +878,11 @@
 		const byteCharacters = window.atob(b64Data);
 		const sliceSize=512;
 		  const byteArrays = [];
-		  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+		  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
 		    const slice = byteCharacters.slice(offset, offset + sliceSize);
 	
 		    const byteNumbers = new Array(slice.length);
-		    for (let i = 0; i < slice.length; i++) {
+		    for (var i = 0; i < slice.length; i++) {
 		      byteNumbers[i] = slice.charCodeAt(i);
 		    }
 	
@@ -818,7 +895,10 @@
 	
 	
 	function onDownloadFileIE(data,filename){
-		window.navigator.msSaveBlob(data, filename);
+		// window.navigator.msSaveBlob(data, filename);
+		console.log("IEDownload");
+		var spt = filename.split(".");			 
+		download(b64toBlob2(data, wgMimeType[spt[spt.length-1].toLowerCase()]), fileName[filename], wgMimeType[spt[spt.length-1].toLowerCase()]);
 		
 	}
 	// The chat class will call onError when an error occurs for any reason
@@ -826,48 +906,53 @@
 	}
 	
 	function endChat(){
-		
-		if(end == true)
+		if(oChatStart == true)
 		{
-			var val={DisconnectReason:"Chat_UserEnd"};
-			oChat.updateUserDataChat(val);
+			if(end == true)
+			{
+				var val={DisconnectReason:"Chat_UserEnd"};
+				oChat.updateUserDataChat(val);
+				
+			}
+			else{
+				var val={DisconnectReason:"Chat_ChannelSelectorTimeout"};
+				oChat.updateUserDataChat(val);
+				
+			}
+			oChat.endChat();
+			clearChatbox();
+			oChatStart = false;
+			ClearCookie();
+			setCookie("username", user, 0.00001);
+			document.getElementById("emoji-chat").style.display = "none";
+			click=false;
+			SplashMessagefrist = true;
+			document.getElementById("wg-emoji").innerHTML=""; 
+			if(document.getElementById('li-btn-selecter') != null )
+			{
+				document.getElementById('li-btn-selecter').parentNode.removeChild(document.getElementById('li-btn-selecter'));
+				
+			}else if(document.getElementById('li-btn-sms') != null){
+				document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));	
+			}			
+			createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+			createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"])
 			
+			readConfig(wgLanguage);
+			$('.btn-in-chat-download').prop('disabled', true);
+			$('.imgfile').toggle(false); 
+			$('#btn-Send').prop('disabled', true);
+			$('#uploadfile').prop('disabled', true);
+			$('#btn-emoji').prop('disabled', true);
+			document.getElementById("btn-emoji").disabled = true;
+			$('#messagechat').prop('disabled', true);
+			rehistory = 0;
+			setTimeout(function(){
+						createBtnReChat(wgBtnChat);
+						$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
+						wgLanguage = "TH";
+					}, 2000);  	
 		}
-		else{
-			var val={DisconnectReason:"Chat_ChannelSelectorTimeout"};
-			oChat.updateUserDataChat(val);
-			
-		}
-		oChat.endChat();
-		clearChatbox();
-		oChatStart = false;
-		ClearCookie();
-		setCookie("username", user, 0.00001);
-		document.getElementById("emoji-chat").style.display = "none";
-		click=false;
-		document.getElementById("wg-emoji").innerHTML=""; 
-		if(document.getElementById('li-btn-selecter') != null )
-		{
-			document.getElementById('li-btn-selecter').parentNode.removeChild(document.getElementById('li-btn-selecter'));
-			
-		}else if(document.getElementById('li-btn-sms') != null){
-			document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));	
-		}				
-		createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-		createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-		wgLanguage = "TH";
-		readConfig(wgLanguage);
-		$('.btn-in-chat-download').prop('disabled', true);
-		$('#btn-Send').prop('disabled', true);
-		$('#uploadfile').prop('disabled', true);
-		$('#btn-emoji').prop('disabled', true);
-		document.getElementById("btn-emoji").disabled = true;
-		$('#messagechat').prop('disabled', true);
-		rehistory = 0;
-		setTimeout(function(){
-					createBtnReChat(wgBtnChat);
-					$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
-				}, 2000);  	
 	}
 	
 	$(document).on('keypress','textarea[name=messagechat]',function(e) { 
@@ -887,9 +972,19 @@
 		 {	
 			x = obj[1]/60;
 			x = Math.round(x);
-			var messageewt = wgSystem[wgLanguage]["messageresponse"]["EWT"].replace("_X_",x);
-			createMessage(wgMsgMari,messageewt);	
-			createBtnSelect(wgBtnQ,wgBtnCancelQ,wgBtnEmail);
+			if(isewt)
+			{
+				console.log("เข้า isewt");
+				var messageewt = wgSystem[wgLanguage]["messageresponse"]["EWT"].replace("_X_",x);
+				createMessage(wgMsgMari,messageewt);	
+				createBtnSelect(wgBtnQ,wgBtnCancelQ,wgBtnEmail);
+			}
+			else
+			{
+				console.log("เข้า !isewt");
+				var messageewt = wgSystem[wgLanguage]["messageresponse"]["LessEWT"].replace("_X_",x);
+				createMessage(wgMsgMari,messageewt);
+			}
 			
 			
 		 }
@@ -905,12 +1000,11 @@
 	function selectq() {
 		chanelselect = false;
 		document.getElementById('li-btn-selecter').parentNode.removeChild(document.getElementById('li-btn-selecter'));
-		
+		clearTimeout(timeselecter);	
 		createSms(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["AskSMS"]);
 		SmsTime = setTimeout(function(){
 			document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
 			createMessage(wgMsgMariload,SplashMes[0]);										
-			clearTimeout(timeselecter);		
 			},timeSms);
 	}
 	
@@ -924,6 +1018,7 @@
 	function attach(fileup){	
 		// oChat.checkmimetypecustomer(fileup[0],fileup);
 		oChat.uploadfileChat(fileup);
+		
 			  
 	}
 	
@@ -942,7 +1037,7 @@
 			for(var j=0;j<1;j++){	//SplashMes.length
 				createMessage(wgMsgMariload,SplashMes[j]);					}		
 				isewt = false;		
-				clearTimeout(timeselecter);
+				// clearTimeout(timeselecter);
 				clearTimeout(SmsTime);
 		}
 	}
@@ -959,7 +1054,7 @@
 			var now = false;
 			for(j = 0;j < (rehistory-1); j++)
 			{	
-
+				 
 				if(j != (rehistory-1) && numcol != 0 && chatallhistory.message.length != 1)  
 				{
 					do{
@@ -976,8 +1071,8 @@
 							}
 							catch(err) {
 								if(numcol == 0)
-								{									
-									dateold = new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleDateString()+" "+new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleTimeString();	
+								{
+									dateold = new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleDateString()+" "+new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleTimeString();
 								}
 								break;
 							}
@@ -1003,11 +1098,11 @@
 						}
 						if(obj == "wgMsgAgent" && numcol != 0)
 						{
-							createMessage(wgMsgAgent,obj1,"history"); 	
+							createMessage(wgMsgAgent,obj1,"","history"); 	
 						}
 						else if(obj == "wgMsgCustomer" && numcol != 0)
 						{
-							createMessage(wgMsgCustomer,obj1,"history"); 
+							createMessage(wgMsgCustomer,obj1,"","history"); 
 						}
 					}
 				}
@@ -1017,9 +1112,18 @@
 					{
 						createMessagehistory(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["tabmessagenow"]); 
 						now = true;
-					}if(numcol == 0)
+					}if(numcol == 0 || (chatallhistory.message[0].type == null && chatallhistory.message[0].text == null && chatallhistory.message[0].starttime == null))
 					{
-						onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alertoldhistory"]);
+						if(chatallhistory.message.length == 1 )
+						{
+							console.log(chatallhistory);
+							onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alertnohistory"]);
+						}
+						else
+						{
+							console.log(chatallhistory);
+							onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alertoldhistory"]);
+						}
 					}
 				}
 				numlast = numcol;

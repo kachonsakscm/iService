@@ -162,6 +162,7 @@ Chat.createAPIv2 = function(config) {
 					me._config.onStarted();
 					me._getlimitfileChat();
 					var elmnt = document.getElementById("chat-history");
+					firstmessage = false;
 			}
 			else
 			{
@@ -305,6 +306,7 @@ Chat.createAPIv2 = function(config) {
 						if ( me._config.debug === true ) {
 						}
 						var oo = JSON.parse(request.responseText);
+						
 					}
 				}
 			}
@@ -315,8 +317,12 @@ Chat.createAPIv2 = function(config) {
 		_startChatRefresh: function() {			
 			var me = this;
 			me._chatRefreshIntervalId = setInterval( function() {
-				me._refreshChat();
-			}, 5000);
+				if(checkrefreshchat == false)
+				{
+					me._refreshChat();
+					checkrefreshchat = true;
+				}
+			}, 1000);
 		},
 		
 		
@@ -373,18 +379,6 @@ Chat.createAPIv2 = function(config) {
 			}
 			
 			request.onreadystatechange = function() {
-				if(request.status != 200)
-				{
-					internet = false;
-					if(wgLanguage == "TH")
-					{
-					onMessageAlert(dataMessageTH["Error-0"]);
-					}
-					else if(wgLanguage == "EN")
-					{
-					onMessageAlert(dataMessageEN["Error-0"]);
-					}
-				}
 				if(request.readyState == 4 && request.status == 200){ 
 					if(internet == false)
 					{
@@ -396,41 +390,61 @@ Chat.createAPIv2 = function(config) {
 					}
 					// Update the transcript position
 					var oo = JSON.parse(request.responseText);
+					// alert(request.responseText);
 					if((oo.chatEnded == true && !oo.errors && internet == false )||(oo.chatEnded == true && !oo.errors && internet != false )||(oo.chatEnded == true && oo.errors && internet == false ) ||oo.chatEnded == true )
-					{
-						me.termitokendownload();
-						me._stopChatRefresh();
-						me._stopVerifytoken();
-						setCookie("username", user, 0.00001);
-						oChatStart = false;
-						removeTyping();
-						$('#btn-Send').prop('disabled', true);
-						$('#uploadfile').prop('disabled', true);
-						$('#messagechat').prop('disabled', true);
-						if(document.getElementById("btn-emoji").disabled == false)
-						{
-							if(!end)
+					{						
+						$.each(oo.messages, function(index, message) {	
+							if(message.type != "ParticipantLeft")
 							{
-								createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-								createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-								setTimeout(function(){
-								createBtnReChat(wgBtnChat);
-								$('.btn-in-chat-download').prop('disabled', true);
-								rehistory=0;
-								$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
-								}, timerestartchat);  
-							}else
+								if(message.type === "FileUploaded"){
+									// me.checkmimetypeagent(message.userData["file-id"],message.from.type, message.from.nickname,message.userData);
+									me._config.onFileReceived(message.from.type, message.from.nickname,message.userData,"",message.utcTime);		
+								} else{
+										me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded,message.index,indexTold,message.utcTime);
+										indexTold = message.index;
+										// alert(message.text);
+								}
+							}
+							else
 							{
-								$('.btn-in-chat-download').prop('disabled', true);
-								createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-								createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-							}								
-						}
-						document.getElementById("btn-emoji").disabled = true;
-						chat = "";	
+								
+							}
+						}); 
+								me.termitokendownload();
+								me._stopChatRefresh();
+								me._stopVerifytoken();
+								setCookie("username", user, 0.00001);
+								oChatStart = false;
+								SplashMessagefrist = true;
+								removeTyping();
+								$('#btn-Send').prop('disabled', true);
+								$('#uploadfile').prop('disabled', true);
+								$('#messagechat').prop('disabled', true);
+								$('.imgfile').toggle(false); 
+									if(!end)
+									{
+										createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+										createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+										setTimeout(function(){
+										createBtnReChat(wgBtnChat);
+										$('.btn-in-chat-download').prop('disabled', true);
+										rehistory=0;
+										$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
+										}, timerestartchat);  
+										end = true;
+									}else
+									{
+										$('.btn-in-chat-download').prop('disabled', true);
+										createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+										createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+									}								
+								
+								document.getElementById("btn-emoji").disabled = true;
+								chat = "";	
 					}
 					else if(!oo.chatEnded && !oo.errors && internet && chat == "ChatCookie")
 					{
+						// console.log("!oo.chatEnded && !oo.errors && internet && chat == ChatCookie");
 						user = "ChatCookie";		
 						setCookie("username", user, 0.35000);
 						internet = true;
@@ -439,9 +453,10 @@ Chat.createAPIv2 = function(config) {
 						$.each(oo.messages, function(index, message) {	
 							if(message.type === "FileUploaded"){
 								// me.checkmimetypeagent(message.userData["file-id"],message.from.type, message.from.nickname,message.userData);
-								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData);		
+								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData,"",message.utcTime);		
 							} else{
-									me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded);
+									me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded,message.index,indexTold,message.utcTime);
+									indexTold = message.index;
 							}
 						}); 
 						if(rehistory > 0)
@@ -452,23 +467,30 @@ Chat.createAPIv2 = function(config) {
 					}
 					else if(!oo.chatEnded && !oo.errors && internet)
 					{
+						// console.log("!oo.chatEnded && !oo.errors && internet");
 						user = "ChatCookie";		
 						setCookie("username", user, 0.35000);
 						internet = true;
 						me._transcriptPosition = oo.nextPosition;
 						// For each item in the transcript...
 						$.each(oo.messages, function(index, message) {	
+						// alert(message.text);
 							if(message.type === "FileUploaded"){
 								// me.checkmimetypeagent(message.userData["file-id"],message.from.type, message.from.nickname,message.userData);
-								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData); 								
+								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData,"",message.utcTime); 								
 							} else{
-								me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded);
+								me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded,message.index,indexTold,message.utcTime);
+								indexTold = message.index;
 							}
 						}); 
 						scrolltext = true;
-					}					
+					}	
+// console.log("ไม่เข้าใครเลย");					
 				}
 			}
+			setTimeout(function(){
+				checkrefreshchat = false;
+			},4000);
 			request.send(params);
 			
 		},	
@@ -508,9 +530,11 @@ Chat.createAPIv2 = function(config) {
 						if ( me._config.debug === true ) {
 						}
 						me._getlimitfileChat();
+						
 						if(isIE)
 						{
-							me._config.onDownloadFileIE(oo.FileDownload,fileName);							
+							me._config.onDownloadFileIE(oo.FileDownload,fileName);	
+								console.log("IE");
 						}
 						else
 						{
@@ -574,30 +598,37 @@ Chat.createAPIv2 = function(config) {
 			me._uploadMaxFiles = parseInt(me._uploadMaxFiles);
 			me._usedUploadMaxTotalSize = parseInt(me._usedUploadMaxTotalSize);
 			me._uploadMaxTotalSize = parseInt(me._uploadMaxTotalSize);
-			if(fileup[0].size > me._uploadMaxFileSize){
-				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-File-Size"]);
-				$("#uploadfile").val(null);
-				return;
-			}			
-			var sptname =  fileup[0].name.split(".");			
-			if(me._uploadFileTypes.search(sptname[sptname.length-1].toLowerCase()) == -1){
-				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-File-Types"]);
-				$("#uploadfile").val(null);
-				return;
+			if(isIE)
+			{
+				console.log("เข้าIE");
+			}
+			else
+			{
+				console.log("เข้าปกติ");
+				if(fileup[0].size > me._uploadMaxFileSize){
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-File-Size"]);
+					$("#uploadfile").val(null);
+					return;
+				}			
+				var sptname =  fileup[0].name.split(".");	
+				if(me._uploadFileTypes.search(sptname[sptname.length-1].toLowerCase()) == -1){
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-File-Types"]);
+					$("#uploadfile").val(null);
+					return;
+				}	
+				
+				if(me._usedUploadMaxFiles >= me._uploadMaxFiles){
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Upload-Max-Files"]);
+					$("#uploadfile").val(null);
+					return;
+				}
+				
+				if(me._usedUploadMaxTotalSize >= me._uploadMaxTotalSize){
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-Total-Size"]);
+					$("#uploadfile").val(null);
+					return;
+				}
 			}	
-			
-			if(me._usedUploadMaxFiles >= me._uploadMaxFiles){
-				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Upload-Max-Files"]);
-				$("#uploadfile").val(null);
-				return;
-			}
-			
-			if(me._usedUploadMaxTotalSize >= me._uploadMaxTotalSize){
-				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-Total-Size"]);
-				$("#uploadfile").val(null);
-				return;
-			}
-			
 			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/file';		
 			var formData = new FormData();
 			formData.append('userId', me._userId);
@@ -633,6 +664,7 @@ Chat.createAPIv2 = function(config) {
 						}
 						var oo = JSON.parse(request.responseText);
 						me._getlimitfileChat();
+						
 					}
 				}
 			}
@@ -896,7 +928,7 @@ Chat.createAPIv2 = function(config) {
         },
 		
    chathisrotyview: function(message) {
-
+			viewhistory = false;
 			var me = this;
 			var url = urlchathisrotyview+'/?History='+rehistory;
 			const request = new XMLHttpRequest();
@@ -918,12 +950,12 @@ Chat.createAPIv2 = function(config) {
 				}
 				else
 				{
-					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+					 me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
 				}			
 			}
 			request.onreadystatechange = function() {
 				if(request.status != 200 && request.status != 401){
-						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+						 me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
 					}
 				if(request.status == 401)
 				{	
@@ -972,22 +1004,17 @@ Chat.createAPIv2 = function(config) {
 	
 					if(wgLanguage == "TH")
 					{
-						onMessageAlert(dataMessageTH["Error-408"]);					
+						onMessageAlert(dataMessageTH["Error-401"]);					
 					}
 					else if(wgLanguage == "EN")
 					{
-						onMessageAlert(dataMessageEN["Error-408"]);					
+						onMessageAlert(dataMessageEN["Error-401"]);					
 					}
 				}
-				else
-				{
-					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
-				}			
+							
 			}
 			request.onreadystatechange = function() {
-				if(request.status != 200){
-						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
-					}
+				
 				if(request.readyState == 4 ){ 
 					if(request.status == 200){
 						if ( me._config.debug === true ) {
@@ -1071,22 +1098,16 @@ Chat.createAPIv2 = function(config) {
 	
 					if(wgLanguage == "TH")
 					{
-						onMessageAlert(dataMessageTH["Error-408"]);					
+						onMessageAlert(dataMessageTH["Error-401"]);					
 					}
 					else if(wgLanguage == "EN")
 					{
-						onMessageAlert(dataMessageEN["Error-408"]);					
+						onMessageAlert(dataMessageEN["Error-401"]);					
 					}
 				}
-				else
-				{
-					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
-				}			
+							
 			}
 			request.onreadystatechange = function() {
-				if(request.status != 201){
-						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
-					}
 				if(request.readyState == 4 ){ 
 					if(request.status == 201){
 						if ( me._config.debug === true ) {
@@ -1168,7 +1189,6 @@ Chat.createAPIv2 = function(config) {
 					}
 				}
 			}
-
 			if(file.size < me._uploadMaxFileSize)
 			{
 				request.send(data);

@@ -1,0 +1,93 @@
+<html>
+<head>
+<script src="https://galb.truecorp.co.th/iservice/jquery-1.11.1.min.js"></script>
+<script src="https://galb.truecorp.co.th/iservice/download.js"></script>
+</head>
+<body>
+<script>
+
+		var paramUrl = {};	
+		var urlStep1 = window.location.href.split("?");
+		var fullurl = urlStep1[1].substring(0,(urlStep1[1].length-8));
+		var deurl = urlStep1[urlStep1.length-1].substring((urlStep1[urlStep1.length-1].length-8), (urlStep1[urlStep1.length-1].length));
+		deurl = window.atob(deurl);
+		deurl = window.atob(deurl);
+		newurl = fullurl+deurl;
+		if(newurl.substring((newurl.length-3),newurl.length)=="gns")
+		{
+		
+				if(urlStep1.length > 1){
+					var urlStep2 = newurl.split("&");
+					urlStep2.forEach(function(e) {
+					var temp = e.split("=");
+					paramUrl[temp[0]] = temp[1]; 
+					}); 
+				}
+				var fileId = paramUrl['fileId'];
+				var fileName = paramUrl['filename'];
+				var Tfile = paramUrl['Tfile'];
+				var filetype = paramUrl['filetype'];
+				var filename = decodeURI(fileName);
+				
+			//new api download	
+			var data = JSON.stringify({
+				  "TokenID":Tfile ,
+				  "FileID": fileId
+				});
+			var url = 'https://galb-dev.truecorp.co.th/downloadResource/download';
+			const request = new XMLHttpRequest();
+				request.onloadstart = function(ev) {
+				}
+			request.open("POST", url);
+			request.setRequestHeader("Content-Type","application/json");
+			request.onerror = function() {
+							
+			}
+			request.onreadystatechange = function() {				
+				if(request.readyState == 4 && request.status == 201){ 
+					  
+					 var oo = JSON.parse(request.response);
+							onDownloadFile(oo.FileDownload);										
+						
+					}
+			}
+			request.send(data);
+						
+			function onDownloadFile(data){
+			   download(b64toBlob2(data, filetype), filename, filetype);
+			   <!-- try -->
+				<!-- { -->
+					
+					<!-- if(download(b64toBlob2(data, filetype), filename, filetype)) -->
+					<!-- { -->
+						<!-- alert("ดาวน์โหลดเรียบร้อยแล้ว (Download complete)"); -->
+					<!-- } -->
+				<!-- } -->
+				<!-- catch(err) { -->
+					<!-- alert(err); -->
+				<!-- } -->
+			}
+				
+			function b64toBlob2(b64Data, contentType){
+				const byteCharacters = window.atob(b64Data);
+				const sliceSize=512;
+				  const byteArrays = [];
+				  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+					const slice = byteCharacters.slice(offset, offset + sliceSize);
+			
+					const byteNumbers = new Array(slice.length);
+					for (let i = 0; i < slice.length; i++) {
+					  byteNumbers[i] = slice.charCodeAt(i);
+					}
+			
+					const byteArray = new Uint8Array(byteNumbers);
+					byteArrays.push(byteArray);
+				  }
+				  const blob = new Blob(byteArrays, {type: contentType});
+				  return blob;
+			}			
+		}
+		</script>
+		<center><font size="30" color="red">กดปุ่มย้อนกลับเพื่อสนทนากับเจ้าหน้าที่ <br>Press the back button to chat with our Agent.</font></center>
+</body>
+</html>

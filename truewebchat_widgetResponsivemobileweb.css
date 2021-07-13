@@ -91,8 +91,7 @@
 		height: 10%;
 	}
 	.wgChatbox-footer{
-		height: 13%;
-		padding-bottom: 1.5em;
+		height: 10%;
 	}
 	.wgChatbox-body{
 		height: 90%;
@@ -258,7 +257,6 @@
 	float:left;
 	border: solid 0.063em #e9e9eb; 
 	font-family:'TrueMedium';
-
 	
 }
 
@@ -354,7 +352,7 @@
 	
 }
 .wgChatbox-body .chat-history {
-	position:relative;
+	position:absolute;
 	overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 	height:100%;
@@ -475,11 +473,10 @@
   to { width: 100% }
 }
 .wgChatbox-footer{
-	position: fixed;
+	position: relative;
 	width:100.1%;
 	background-color: #ffffff;
 	display:table;
-	bottom: 0em;
 	/* height: 10%; */
 }
 .wgChatbox-footer .span1{
@@ -544,7 +541,7 @@ button.btn-in-chathistory{
 	/* margin-left:1.50em; */
 	outline:none;
 	font-family:'TrueMedium';
-	width:60%;
+	width:40%;
 }
 button.btn-re-chat{
 	border: 0.1em solid #ed1c24;
@@ -978,7 +975,6 @@ button.btn-sms:hover{
     width: 100%;
 	cursor : pointer;
 }
-
 /* .selec:hover{ */
 	
 	/* color:inherit; */

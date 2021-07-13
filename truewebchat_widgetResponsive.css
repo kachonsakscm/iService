@@ -157,7 +157,7 @@
 		height: 8%;
 	}
 	.wgChatbox-body{
-		height: 80%;
+		height: 77%;
 	}
 	.wgChatbox-head .span1 .span1-1{
 		width:2.525em;
@@ -182,6 +182,12 @@
 		top:47%;
 	}
 	button.btn-in-chat{	
+		font-size:1.00em;	
+	}
+	button.btn-in-chathistory{	
+		font-size:1.00em;	
+	}
+	button.btn-re-chat{	
 		font-size:1.00em;	
 	}
 	.wgChatbox-footer .span2 textarea{
@@ -237,7 +243,7 @@
 		height: 7%;
 	}
 	.wgChatbox-body{
-		height: 88.5%;
+		height: 82.5%;
 	}
 	.wgChatbox-head .span1 .span1-1{
 		width:2.525em;
@@ -262,6 +268,12 @@
 		top:48%;
 	}
 	button.btn-in-chat{	
+		font-size:1.00em;	
+	}
+	button.btn-in-chathistory{	
+		font-size:1.00em;	
+	}
+	button.btn-re-chat{	
 		font-size:1.00em;	
 	}
 	.wgChatbox-footer .span2 textarea{
@@ -793,7 +805,45 @@ button.btn-in-chat{
 	font-family:'TrueMedium';
 	width:26%;
 }
+button.btn-in-chathistory{
+	border: 0.1em solid #ed1c24;
+    border-radius: 1.3em;
+	color:#ed1c24;
+	background-color:#ffffff;
+	/* box-shadow: 0.125em 0.188em; */
+	padding: 0.625em;
+	text-transform: uppercase;
+	cursor:pointer;
+	margin-left:1.00em!important; 
+	outline:none;
+	font-family:'TrueMedium';
+	width:45%;
+}
+button.btn-re-chat{
+	border: 0.1em solid #ed1c24;
+    border-radius: 1.3em;
+	color:#ed1c24;
+	background-color:#ffffff;
+	/* box-shadow: 0.125em 0.188em; */
+	padding: 0.625em;
+	text-transform: uppercase;
+	cursor:pointer;
+	/* margin-left:1.50em; */
+	outline:none;
+	font-family:'TrueMedium';
+	width:38%;
+}
 button.btn-in-chat:hover{
+	/* font-weight: bold; */
+	color:white;
+	background: #F93E60;
+}
+button.btn-in-chathistory:hover{
+	/* font-weight: bold; */
+	color:white;
+	background: #F93E60;
+}
+button.btn-re-chat:hover{
 	/* font-weight: bold; */
 	color:white;
 	background: #F93E60;
@@ -1027,6 +1077,18 @@ button.btn-none-style{
 	font-size:0.65em;
 	/* margin-left:1.50em; */
 }
+.btn-re-chat{
+	border: 0.125em solid #ed1c24;
+    border-radius: 1.3em;
+	color:#ed1c24;
+	background-color:#ffffff;
+	/* box-shadow: 0.125em 0.188em; */
+	padding: 0.625em;
+	text-transform: uppercase;
+	cursor:pointer;
+	font-size:0.65em;
+	/* margin-left:1.50em; */
+}
 .btn-sms{
 	border: 0.1em solid #ed1c24;
     border-radius: 1.3em;
@@ -1137,6 +1199,52 @@ button.btn-sms:hover{
     font-size: 1em;
     color: white;
     width: 100%;
+}
+
+.messagehistoryfirst{
+	border: solid 0.075em #999;
+    background: #303c46;
+    float: left;
+    color: #ffffff;
+    /* padding: 0.525em 0.850em; */
+    border-radius: 0.500em;
+    margin-bottom: 0.500em;
+    max-width: 100%;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: none;
+    position: relative;
+    left: 0.5em;
+    /* margin-right: 1.00em; */
+    font-size: 1em;
+    color: white;
+    width: 100%;
+	cursor : pointer;
+}
+
+.messagehistoryfirst:hover{
+	border: solid 0.075em #999;
+    background: white;
+    float: left;
+    color: #ffffff;
+    /* padding: 0.525em 0.850em; */
+    border-radius: 0.500em;
+    margin-bottom: 0.500em;
+    max-width: 100%;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: none;
+    position: relative;
+    left: 0.5em;
+    /* margin-right: 1.00em; */
+    font-size: 1em;
+    color: black;
+    width: 100%;
+	cursor : pointer;
 }
 
 /* .selec:hover{ */
