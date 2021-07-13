@@ -15,18 +15,18 @@
 	var firstmessage = true;
 	var chanelselect = true;
 	var valcookie = {};
-	var aa="";
+	var handlefromline = 0;
+	var noti = "";
+	var HistoryTime;
+	var rehistory = 0;
+	var serviceid = "" ;
+	var fileName = [""];
+	var dateold = "";
+	
 	window.onload = function() {
 		
 		document.getElementById("formchat").style.display = "block";
 		getpara();
-		
-		// $("#formchat").fadeIn();
-		
-		// if(window.innerWidth <= 1000)
-		// {
-			// alert("มือถือ");
-		// }
 		for(var i=0;i<wgScript.length;i++){
 			var oScript = wgScript[i],oTag;
 			if(wgAction.getElementById(oScript.id)) return;
@@ -49,8 +49,9 @@
 			
 				
 	}
+	
+	
 	function openweb(urlweb){
-		 alert("เข้านะ"+urlweb);
 		 
 		window.open(urlweb, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
@@ -76,9 +77,9 @@
 		  d.setTime(d.getTime() + (exdays*24*60*60*1000));		
 		  b.setTime(b.getTime() );		
 		  var expires = "expires=" + d.toGMTString();		
-		  var expiresb = "expires=" + b.toGMTString();			
-		  document.cookie = "UserId" + "=" + UserId + "," +"ChatId" + "=" + ChatId + "," +"SecureKey" + "=" + SecureKey+ "," +"Alias" + "=" + Alias + "," +"TranscriptPosition" + "=" + TranscriptPosition + "," +cname + "=" + cvalue + ";" + expires + ";path=/";	
-			
+		  var expiresb = "expires=" + b.toGMTString();	
+		 document.cookie = "UserId" + "=" + UserId + "," +"ChatId" + "=" + ChatId + "," +"SecureKey" + "=" + SecureKey+ "," +"Alias" + "=" + Alias + "," +"TranscriptPosition" + "=" + TranscriptPosition + "," +"rehistory" + "=" + rehistory + "," +"tokendownload" + "=" + tokendownload + "," +"tokenhistory" + "=" + tokenhistory + "," +"language" + "=" + wgLanguage + "," +cname + "=" + cvalue + ";" + expires + ";path=/";	
+	
 	}		
 	function getCookie(cname) {		
 		  var name = cname + "=";				
@@ -90,10 +91,7 @@
 			  {		
 				  c = ca[i];		
 				  c = c.substring(0);	
-			  }		
-			// while (c.charAt(0) == ' ') {		
-			  // c = c.substring(1);	
-			// }		
+			  }			
 			if (c.indexOf(name) == 0) {				
 			  return c.substring(name.length, c.length);		
 			}		
@@ -121,19 +119,20 @@
 				ChatId = valcookie[1] ;		
 				SecureKey = valcookie[2] ;		
 				Alias = valcookie[3] ;		
-				TranscriptPosition = valcookie[4] ;		
+				TranscriptPosition = valcookie[4] ;	
+				rehistory = parseInt(valcookie[5]) ;
+				tokendownload = valcookie[6];
+				tokenhistory = valcookie[7];
+				wgLanguage = valcookie[8];
 				chat = "ChatCookie";		
-				// openForm();	
 				
-			}else {		
-				 // user = "ChatCookie";			
-				 // setCookie("username", user, 0.00105);		
+			}else {			
 			 }		
 	}
 	
 	function getpara(){
-		var url=decodeURIComponent(window.location.href).replace( /\+/g, ' ' );
-		 alert(url);
+		var url=decodeURIComponent(window.location.href).replace( /\+/g,'');
+		  // alert(url);
 		var urlStep1 = url.split("?");
 		if(urlStep1.length > 1){
 			var urlStep2 = urlStep1[1].split("&");
@@ -142,80 +141,126 @@
 			paramUrl[temp[0]] = temp[1]; 
 			}); 
 		}
-		 $("input[id=Service_number]").val(paramUrl['service_id']);
-		//$("input[name=Service_number]").val("0820891926");
+		 if(paramUrl['service_id'])
+		 {
+			 $("input[id=Service_number]").val(paramUrl['service_id']);
+			 serviceid = paramUrl['service_id'];
+		 }
 		userintention = paramUrl['UserIntention'];
-		
-		if(paramUrl['Channel'] != "")
+		if(paramUrl['Channel'])
 		{
-			var channel = "";
-			channel = $("input[id=SubmitterSourceName]").val();
-			
-			if(paramUrl['Channel'] == "web")
+			if(paramUrl['SubmitterSourceName'])
 			{
-				
-				$("input[id=SubmitterSourceName]").val(channel+paramUrl['Channel']);
+				$("input[id=SubmitterSourceName]").val(paramUrl['SubmitterSourceName']+"_"+paramUrl['Channel']);
 			}
 			else
 			{
-				$("input[id=SubmitterSourceName]").val(channel+"app");
+				var channel = "";
+				channel = $("input[id=SubmitterSourceName]").val();
+				
+				if(paramUrl['Channel'] == "web")
+				{
+					
+					$("input[id=SubmitterSourceName]").val(channel+paramUrl['Channel']);
+				}
+				else
+				{
+					$("input[id=SubmitterSourceName]").val(channel+"app");
+				}
 			}
 		}
-		// langweb  = paramUrl["ln"];
-		// if(langweb != null)
-		// {
-			
-			// langweb = langweb.toUpperCase();
-			// wgLanguage = langweb;
-		// }
+		if(paramUrl['Product'])
+		{
+			$("#Product").val(paramUrl['Product']);
+			handlefromline += 1;
+		}
+		else if(paramUrl['Product'] == "")
+		{
+			$("#Product").val("");
+		}
+		if(paramUrl['User_intent'])
+		{
+			$("#user_intent").val(paramUrl['User_intent']);
+			handlefromline += 1;
+		}
+		else if(paramUrl['User_intent'] == "")
+		{
+			$("#user_intent").val("");
+		}
+		if(paramUrl['Subject'])
+		{
+			$("textarea[name=messagechat]").val(paramUrl['Subject'])
+			handlefromline += 1;
+		}
+		else if(paramUrl['Subject'] == "")
+		{
+			$("textarea[name=messagechat]").val("");
+		}
+		if(paramUrl['Language'])
+		{
+			$("#GCTI_LanguageCode").val(paramUrl['Language']);
+			handlefromline += 1;
+		}
+		else if(paramUrl['Language'] == "")
+		{
+			$("#GCTI_LanguageCode").val("");
+		}		
+		noti = paramUrl['noti_token'];
 	}
 	function readConfig(lang){
 		wgLanguage = lang;
 		document.getElementById("messagechat").placeholder = wgSystem[wgLanguage]["messageresponse"]["Textsent"];
-		// readWgMessageClient(lang,"messageresponse");
-		// readWgMessageClient(lang,"userintention");
-		
-		//readWgFunction();
 	}
 	function openForm(){
+			createBtnInChathistory(wgBtntabmessagehistoryfirst);
+			createMessagehistory(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["tabmessagenow"]); 
+			end = false;
+			firstmessage = true;
+			document.getElementById("formchat").style.display = "block";
+			selecInten = false;
+			$('#messagechat').prop('disabled', false);	
+			$('#btn-Send').prop('disabled', false);		
+			document.getElementById("btn-emoji").disabled = false;
+			document.getElementById("messagechat").placeholder = wgSystem[wgLanguage]["messageresponse"]["Textsent"];
+			$("#"+wgChatboxId).removeClass("hide");
+			if((chat != "ChatCookie" || !chat ) && (oChatStart == false || oChatStart == true))
+			{
+				removeBtnInChat(wgBtnChat["id"]);
+				if(handlefromline == 4)
+					{
+						sendMsg();
+					}
+				else
+				{
+					createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["Greeting"]);
+					if(wgLanguage == 'TH')
+					{
+						createBtnInChat(wgBtnEng);
+						timeEng = setTimeout(function(){ afterSelectLanguage();}, timeoutEng);
+					}
+					else
+					{
+						 afterSelectLanguage();
+					}
+				}
+			}else if(chat == "ChatCookie")
+			{
+				if(rehistory > 0)
+				{
+				}
+				HistoryTime = setTimeout(function(){
+					$("textarea[name=messagechat]").val("");
+					requestChat();
+				},timehis);
+			}	
+			
 		
-		firstmessage = true;
-		$("#Product").val("");
-		$("#user_intent").val("");
-		$("input[name=Subject]").val("");
-		$("#GCTI_LanguageCode").val("");
-		document.getElementById("formchat").style.display = "block";
-		selecInten = false;
-		// $('#uploadfile').prop('disabled', true);
-		$('#messagechat').prop('disabled', false);	
-		$('#btn-Send').prop('disabled', false);		
-		// $('#btn-emoji').prop('disabled', false);
-		document.getElementById("btn-emoji").disabled = false;
-		if(!$("#"+wgChatboxId).hasClass("hide")){
-			return;	
-		}	
-		document.getElementById("messagechat").placeholder = wgSystem[wgLanguage]["messageresponse"]["Textsent"];
-		$("#"+wgChatboxId).removeClass("hide");
-		if(chat != "ChatCookie")
-		{
-			createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["Greeting"]);
-			if(wgLanguage == 'TH')
-			{
-				createBtnInChat(wgBtnEng);
-				timeEng = setTimeout(function(){ afterSelectLanguage();}, timeoutEng);
-			}
-			else
-			{
-				 afterSelectLanguage();
-			}
-		}else if(chat == "ChatCookie")
-		{
-			requestChat();
-		}	
 	}
 	
 	function reloadWeb(){
-		window.location.reload(true);
+		setTimeout(function(){
+					window.location.reload(true);
+				},3000);
 	}
 	
 	function afterSelectLanguage(){
@@ -224,7 +269,6 @@
 		if(!isWork && wgLanguage == "EN"){
 			createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["Outofwork"]);
 			$('#btn-Send').prop('disabled', true);
-			// $('#uploadfile').prop('disabled', true);
 			document.getElementById("btn-emoji").disabled = true;
 			$('#messagechat').prop('disabled', true);
 			return false;
@@ -233,8 +277,6 @@
 			setTimeout(function(){
 				var userIntent = createUserIntention(wgSystem[wgLanguage]["userintention"]);
 				displayUserIntention(wgMsgMari,userIntent);
-				// createBtnInChat(wgBtnRequestChat);
-				// createBtnSelect(wgBtnQ,wgBtnCancelQ,wgBtnEmail);
 			},timeReadCsv);
 		}
 		
@@ -246,7 +288,6 @@
       liObj.id = "li"+document.getElementById("ul-history").childNodes.length;
       liObj.innerHTML = "</div><center><div class='message-smallbox'><div class='message-smallbox-head'>"+msgFrom+"  |  "+dateMsg+"</div><div class='message-smallbox-body'>"+msgText+"</div></div></center>";
       document.getElementById("ul-history").appendChild(liObj);     
-      focusScroll();
 	}
 	
 	
@@ -267,25 +308,12 @@
 	}
 	
 	function clearChatbox(){
-		// closeConfirmEnd();
-		// alert("เข้าแล้วนะ");
-		// $(".comfirm-end-background").removeClass("hide");
-			// $(".comfirm-end-box").removeClass("hide");
-			// $('.comfirm-end-inside span').text(data);
-			// $('.comfirm-end-inside button[name="btn-cancel"]').text(wgSystem[wgLanguage]["messageresponse"]["btn_ok"]);
-			// document.getElementById("btn-end").style.display = "none";
-			// document.getElementById("btn-cancel").style.display = "block";
 		clearTimeEng();
 		if(internet == true)
 		{
 			 closeConfirmEnd();	
 		}
-		wgLanguage = "TH";
-		readConfig(wgLanguage);
 		isewt = false;
-		onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["iserviceendchat"]);
-		// $("#wgChatbox").addClass("hide");
-		// $("#ul-history").empty();
 	}
 	
 	function clickemoji(){
@@ -311,7 +339,6 @@
 			$('.comfirm-end-inside button[name="btn-end"]').text(wgSystem[wgLanguage]["messageresponse"]["btn_end"]);
 			$('#btn-email').hide();
 			$('#btn-end').show();
-			//$('#btn-cancel').show();
 			$('#btn-cancel').css('display', 'inline-block');
 			
 		}
@@ -322,29 +349,22 @@
 			$('.comfirm-end-inside button[name="btn-end"]').text(wgSystem[wgLanguage]["messageresponse"]["btn_end"]);
 			$('#btn-end').show();
 			$('#btn-cancel').css('display', 'inline-block');
-			//$('#btn-cancel').show();
-		}
-		// else{
-			// $('.comfirm-end-inside span').text(dataMessage["EmailChatEnd"]);	
-			// $('.comfirm-end-inside button[name="btn-cancel"]').text("Cancel");
-			// $('.comfirm-end-inside button[name="btn-email"]').text("Send Email");
-			
-		// }
-		
-		
+		}	
 	}
 	
 	function onMessageAlert(data){
-		if(internet || firstmessage)
-		{	$(".comfirm-end-background").removeClass("hide");
+		
+		if((internet || firstmessage) && dateold == "")
+		{	
+			$(".comfirm-end-background").removeClass("hide");
 			$(".comfirm-end-box").removeClass("hide");
 			$('.comfirm-end-inside span').text(data);
 			$('.comfirm-end-inside button[name="btn-cancel"]').text(wgSystem[wgLanguage]["messageresponse"]["btn_ok"]);
 			document.getElementById("btn-end").style.display = "none";
 			document.getElementById("btn-cancel").style.display = "block";
 		}
-		else if(!internet)
-		{
+		else if(!internet && dateold == "")
+		{	
 			$(".comfirm-end-background").removeClass("hide");
 			$(".comfirm-end-box").removeClass("hide");
 			$('.comfirm-end-inside span').text(data);
@@ -352,7 +372,15 @@
 			document.getElementById("btn-end").style.display = "none";
 			document.getElementById("btn-cancel").style.display = "none";
 		}
-		//$('#btn-cancel').show();
+		else if(dateold != "")
+		{	
+			$(".comfirm-end-background").removeClass("hide");
+			$(".comfirm-end-box").removeClass("hide");
+			$('.comfirm-end-inside span').text(data+dateold);
+			$('.comfirm-end-inside button[name="btn-cancel"]').text(wgSystem[wgLanguage]["messageresponse"]["btn_ok"]);
+			document.getElementById("btn-end").style.display = "none";
+			document.getElementById("btn-cancel").style.display = "block";
+		}
 		
 	}
 	
@@ -370,12 +398,9 @@
 	}
 	
 	function sendMsg(){
-		
 		clearTimeout(timeEng);
 		removeBtnInChat(wgBtnEng["id"]);
-		//afterSelectLanguage();
-		var text = $('textarea[name=messagechat]').val().replace(/\n/g, "");
-		console.log(text);
+		var text = $('textarea[name=messagechat]').val().replace(/\\n/g,"\n");
 		$('textarea[name=messagechat]').val("");
 		if(text.trim() == ""){
 			return false;
@@ -385,18 +410,19 @@
 				$("input[name=Subject]").val(text);
 				 if(firstmessage == true)
 				 {
-					 createMessage(wgMsgCustomer,text);
+					 if(handlefromline != 4)
+					{
+						createMessage(wgMsgCustomer,text);
+					}
 					 
 				 }
 				 else
 				 {
 					
 				 }
-				$("#GCTI_LanguageCode").val("");
 				requestChat();
 			} else{
-						oChat.sendMessage(text);
-					
+						oChat.sendMessage(text);	
 			}
 		},timeReadCsv);
 		
@@ -407,8 +433,6 @@
 		if( ret == "") ret = "Anonymous";
 		return ret;
 	}
-	
-	
 	
 	function selectProductService(pin,txt){
 		if(selecInten == false)
@@ -422,19 +446,15 @@
 			firstmessage = true;
 			requestChat();
 			selecInten = true;			
-			//oChat.sendMessage(txt);
+			focusScrollwgChatbox();
 		}
 		
 	}
 	
-	function selectEmoji(pin,txt){
-		// var x = document.getElementById("messagechat").val();
-		// var x = $("textarea[name=messagechat]").val();	
+	function selectEmoji(pin,txt){	
 		var x = document.getElementById("messagechat").value
 		 document.getElementById("messagechat").value = x+txt;
-		 
-		// $("#messagechat").val(x+txt);
-		// document.frmMain.messagechat.focus();		
+	
 		$("#messagechat").focus();
 	}
 
@@ -445,10 +465,8 @@
 			$("input[name=lastName]").val(isBlankSetAnonymous($('input[name=lastName]').val()));
 			var formchat = $('#formchat').serialize();
 			oChat = new ChatFactory({
-				<!--baseURL: "https://galb.truecorp.co.th",-->  //PRODUCTION URL
-				<!--baseURL: "https://galb-dev.truecorp.co.th",-->	//DEV URL
-				baseURL: "https://172.16.56.134:8443",	//UAT URL
-				chatServiceName: "gms-chat",
+				baseURL: apiServer,//PRODUCTION URL
+				chatServiceName: gmschat,
 				useCometD: false,
 				verbose: true,
 				debug:true,
@@ -463,13 +481,12 @@
 				onMessageAlert:onMessageAlert
 			});
 			// Start the chat using the variable in form.
-			alert(formchat);
 			oChat.startChat(formchat);
 			createMessage(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["ChatStarted"]);
 			setTimeout(function(){
 				if(firstmessage == true)
 				{
-					oChat.sendMessage($("input[name=Subject]").val());
+					oChat.sendMessage($("input[name=Subject]").val().replace(/\\n/g,"\n"));
 					
 				}
 			}, 2000);  
@@ -477,10 +494,8 @@
 		{
 			var formchat = "ChatCookie";
 			oChat = new ChatFactory({
-				<!--baseURL: "https://galb.truecorp.co.th",-->  //PRODUCTION URL
-				<!--baseURL: "https://galb-dev.truecorp.co.th",-->	//DEV URL
-				baseURL: "https://172.16.56.134:8443",	//UAT URL
-				chatServiceName: "gms-chat",
+				baseURL: apiServer,//PRODUCTION URL
+				chatServiceName: gmschat,
 				useCometD: false,
 				verbose: true,
 				debug:true,
@@ -495,15 +510,14 @@
 				onMessageAlert:onMessageAlert
 			});
 			// Start the chat using the variable in form.
-			alert(formchat);
-			oChat.startChat(formchat);
-		}
-		// $('textarea[name=messagechat-re]').val($("input[name=Subject]").val());
-		// var text = $('textarea[name=messagechat-re]').val();
-		// oChat.sendMessage(text);
-		// firstmessage = true;
-		// sendMsg();
-		
+			
+				oChat.startChat(formchat);
+			if(rehistory > 0)
+						{
+							var elmnt = document.getElementById("chat-history");
+							elmnt.scrollTop = 0;
+						}
+		}		
 		
 	}
 	
@@ -518,7 +532,6 @@
 	}
   
   function onMessageReceived(typeFrom,typeMsg,nickname,textMsg,chatend) {
-		
 		var msg = "";
 		
 		if ( typeMsg === 'Message' || typeMsg === 'Message.Text' ) {
@@ -532,18 +545,15 @@
 				if(m > 0)
 				{
 					urlweb = urlweb.substring(0, m);
-					// msg = ""+texth+"<a href='"+urlweb+"' target='_blank' >"+urlweb+"</a>"+textn+"";
 					msg = ""+texth+"<a onclick='openweb('"+urlweb+"')>"+urlweb+"</a>"+textn+"";
 					
 				}
 				else
 				{
 					urlweb = urlweb.substring(0, textMsg.length);
-					//msg = ""+texth+"<a href='"+urlweb+"' target='_blank' >"+urlweb+"</a>";
 				    msg = ""+texth+"<a onclick=openweb('"+urlweb+"')>"+urlweb+"</a>";
 					
 				}
-				// msg = textt+" "+urlweb;
 			}
 			else if(n>=0 && n<2){
 			var urlweb = textMsg.substring(n,textMsg.length);	
@@ -552,34 +562,34 @@
 				if(m > 0)
 				{
 					urlweb = urlweb.substring(0, m);
-					//msg = "<a href='"+urlweb+"' target='_blank' >"+urlweb+"</a>"+textn+"";	
-					msg = "<a onclick=openweb('"+urlweb+"')>"+urlweb+"</a>"+textn+"";
-					
+					msg = "<a onclick=openweb('"+urlweb+"')>"+urlweb+"</a>"+textn+"";	
 				}
 				else
 				{
 					urlweb = urlweb.substring(0, textMsg.length);
-					 msg = "<a href='"+urlweb+"' target='_blank' >"+urlweb+"</a>";	
-				 // msg = "<a onclick=openweb('"+urlweb+"')>"+urlweb+"</a>";
-					// window.open(urlweb,'_blank','toolbar=0,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400');
+					msg = "<a href='"+urlweb+"' target='_blank' >"+urlweb+"</a>";	
 				}
 			}
 			else{
 			msg = textMsg;
 			}
 		} else if ( typeMsg === 'ParticipantJoined' || typeMsg === 'Notice.Joined') {
+
+
+			if( typeFrom === "Agent")
+			{
+				// oChat.notiinapp(noti);
+				agentjoin = true;
+			}
 			msg = wgSystem[wgLanguage]["messageresponse"]["Joinedchat"];
 			$('#uploadfile').prop('disabled', false);
 		} else if ( typeMsg === 'ParticipantLeft' || typeMsg === 'Notice.Left') {
 			msg = wgSystem[wgLanguage]["messageresponse"]["Leftchat"];
 		} else if ( typeMsg === 'PushUrl' || typeMsg === 'PushUrl.Text' ) {
-			// msg = "<a href='"+textMsg+"'>"+textMsg+"</a>";
-			
 			msg = "<a onclick=openweb('"+textMsg+"') >"+textMsg+"</a>";
 		} else if ( typeMsg === 'Notice' || typeMsg === 'Notice.Text' ) {
 			msg = textMsg;
 		}
-		// msg.length
 		if(typeFrom === "Client" && typeMsg === "TypingStarted") return;
 		if(typeFrom === "Client" && typeMsg === "TypingStopped") return;
 		if(typeFrom === "Client" && msg === "read-confirm") return;
@@ -593,13 +603,13 @@
     
     if(typeFrom === "Agent" && typeMsg === "TypingStopped"){
 		removeTyping();
-		// $('#li-btn-selecter').empty();
 		return false;
     }
     
 		if(typeFrom === "Client"){
 			if(msg == wgSystem[wgLanguage]["messageresponse"]["Joinedchat"]  )
 				{
+					
 					$('#uploadfile').prop('disabled', false);
 				 	return;
 				}
@@ -614,19 +624,19 @@
 				 }
 			
 		} else if(typeFrom === "Agent"){
-			if(msg == wgSystem[wgLanguage]["messageresponse"]["Leftchat"] && chatend == true){
+			if((msg == wgSystem[wgLanguage]["messageresponse"]["Leftchat"] && chatend == true)||(chatend == true)){
 				removeTyping();
 				$('#btn-Send').prop('disabled', true);
-				// $('#uploadfile').prop('disabled', true);
 				$('#btn-emoji').prop('disabled', true);
 				document.getElementById("btn-emoji").disabled = true;
 				$('#messagechat').prop('disabled', true);
 				createMessage(wgMsgAgent,msg);
 				ClearCookie();
+				setCookie("username", user, 0.00001);
+				rehistory=0;
 				setTimeout(function(){
-					
-					createBtnInChat(wgBtnChat);
-					$('#btn-startchat').text("เริ่มต้นสนทนาอีกครั้ง")
+					createBtnReChat(wgBtnChat);
+					$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
 				}, 2000);  
 				
 			}
@@ -655,20 +665,21 @@
 				removeTyping();
 				createMessage(wgMsgAgent,msg);
 			}
-			// $('#li-btn-selecter').empty();
 			
 		} else if(typeFrom === "External"){
 			
 			if(msg.search("VQ_")>=0)
 			{	var obj= {};
 				obj = msg.split(",");
-				alert(obj[1]);
-				 if(obj[1] > ewttime)   //ewttime
+				
+				 if(obj[1] > ewttime && chat != "ChatCookie")   //ewttime
 				 {
+					 
 					timefilter(msg);
 					isewt = true;
 				 }
 			}else if(msg == wgSystem[wgLanguage]["messageresponse"]["Joinedchat"]){
+				
 				return;
 			}else{
 				if(!isewt && msg != "")
@@ -679,31 +690,46 @@
 				{
 					SplashMes.push(msg);
 				}
-			}
-			
-			
-			
+			}		
 			 
 		}
 	}
   
-	function onFileReceived(typeFrom,nickname,udata) {
-		
+	function onFileReceived(typeFrom,nickname,udata,statustype) {
 		var msg = "";
 		var filesize = (parseInt(udata["file-size"])/1024).toFixed(2);
-		//message : {"from":{"nickname":"agent","participantId":2,"type":"Agent"},"index":10,"text":"00D25C4FD5580141","type":"FileUploaded","utcTime":1548735832000,"userData":{"file-document-id":"0002KaE4JJ9Y00BX","file-source":"ucs","file-upload-path":"C:\\Users\\Administrator\\Desktop\\New Text Document.txt","file-id":"00D25C4FD5580141","file-upload-type":"file-system","file-size":"438","file-name":"New Text Document.txt"}}
+		fileName.push(udata["file-name"]);
+		var numfileName = fileName.length-1;
 		msg = udata["file-name"]
 			+ "<br/>"
 			+ filesize+" KB"
 			+ "<br/>"
 			+ "<center>"
-			+ "<button type='button' class='btn-in-chat-download' "
-			+ "value='"+udata["file-id"]+"' "
-			+ "onclick='downloadfile(this.value,\""+udata["file-name"]+"\")' "
-			+ ">"+wgSystem[wgLanguage]["messageresponse"]["DownloadButton"]+"</button>"
-			+ "</center>"
-			;
-		
+			// if(statustype)
+			// {
+				msg = udata["file-name"]
+				+ "<br/>"
+				+ filesize+" KB"
+				+ "<br/>"
+				+ "<center>"
+				+ "<button type='button' class='btn-in-chat-download' "
+				+ "value='"+udata["file-id"]+"' "
+				+ "onclick=downloadfile(this.value,\""+numfileName+"\") "
+				+ ">"+wgSystem[wgLanguage]["messageresponse"]["DownloadButton"]+"</button>"
+				+ "</center>"
+				;
+			// }else
+			// {
+				// msg = udata["file-name"]
+				// + "<br/>"
+				// + filesize+" KB"
+				// + "<br/><br/>"
+				// + "<center>"
+				// +"<font color='#ed1c24' size='3em'>"+wgSystem[wgLanguage]["messageresponse"]["Error-File-Types-Agent"]+"</font>"
+				// + "</center>"
+				// ;
+			// }
+			
 		if(typeFrom === "Client"){
 			createMessage(wgMsgCustomer,msg); 
 		} else if(typeFrom === "Agent"){
@@ -715,113 +741,88 @@
 	}
 	
 	function downloadfile(fileid,filename){
-		oChat.downloadfileChat(fileid,filename);
-	}
-	// function onDownloadFile(data,filename){
-	function onDownloadFile(data,filename,userId,secureKey,alias,baseURL,chatServiceName,chatId,fileId){
-		
-		
 		if(paramUrl['Channel'] == "web")
 		{
-			alert("เข้าดาวน์โหลดเว็บ");
-			 var ev = document.createEvent("MouseEvents");
-			 ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-			 var a = document.createElement('a');
-			 var spt = filename.split(".");
-			 var blob = data;
-			 var url = window.URL.createObjectURL(blob);
-			 a.href = url;
-			 a.download = filename;
-			 a.dispatchEvent(ev);
-			 setTimeout(function(){
-				 window.URL.revokeObjectURL(url);
-			 }, 2000);  
-		}else
+			oChat.downloadfileChat(fileid,filename);
+		}
+		else
 		{
-			if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			alert("เข้าดาวน์โหลดแอนดรอย");
-			 openweb("https://galb.truecorp.co.th/iservice/downloadfile.html?userId='"+userId+"'&secureKey='"+secureKey+"'&alias='"+alias+"'&baseURL='"+baseURL+"'&chatServiceName='"+chatServiceName+"'&chatId='"+chatId+"'&fileId='"+fileId+"'&fileName='"+fileName+"'");			 
+			onDownloadFile(fileid,filename)
+		}
+	}
+	function onDownloadFile(data,filename,userId,secureKey,alias,baseURL,chatServiceName,chatId,fileId){
+		if(paramUrl['Channel'] == "web")
+		{
+			 var spt = filename.split(".");			 
+			 download(b64toBlob2(data, wgMimeType[spt[spt.length-1].toLowerCase()]), fileName[filename], wgMimeType[spt[spt.length-1].toLowerCase()]);
+		 }else
+		{
+			 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || paramUrl['Channel'] == "android") {
+				var spt = filename.split(".");
+				var downloadurl = wgServer+'/downloadfile.html?fileId='+data+'&filename='+fileName[filename]+'&Tfile='+tokendownload+'&filetype='+wgMimeType[spt[spt.length-1].toLowerCase()]+'&';
+
+				function openTab(url) {
+				var a = window.document.createElement("a");
+				a.target = '_blank';
+				a.href = url;
+				var e = window.document.createEvent("MouseEvents");
+				e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				a.dispatchEvent(e);
+				};
+				 var reurl = window.btoa(verify);
+				 openTab(downloadurl+reurl);	
+							 
 			}else
 			{
-			alert("เข้าดาวน์โหลดไอโฟน4");
-			 var downloadurl = 'https://galb.truecorp.co.th/iservice/downloadfile.html?userId='+userId+'&secureKey='+secureKey+'&alias='+alias+'&baseURL='+baseURL+'&chatServiceName='+chatServiceName+'&chatId='+chatId+'&fileId='+fileId+'&fileName='+filename;
-			 // window.open(downloadurl, "_blank");
-			 // var windowReference = window.open(downloadurl, "_blank");
-			 // myService.getUrl().then(function(downloadurl) {
-				 // windowReference.location = downloadurl, "_blank";
-			// });
-			function openTab(url) {
-			// Create link in memory
-			var a = window.document.createElement("a");
-			a.target = '_blank';
-			a.href = url;
+				 var spt = filename.split(".");
+				 var downloadurl = wgServer+'/downloadfile.html?fileId='+data+'&filename='+fileName[filename]+'&Tfile='+tokendownload+'&filetype='+wgMimeType[spt[spt.length-1].toLowerCase()]+'&';
+				 var reurl = window.btoa(verify);
+				 downloadurl = downloadurl+reurl;
+				 var msg = "<a id='ttt' href='"+downloadurl+"' target='_blank' >"+wgSystem[wgLanguage]["messageresponse"]["DownloadButtonios"]+"</a>";	
+				 createMessage(wgMsgMari,msg);
+				 $(document).on('click touchend','#ttt',function(e) {  reloadWeb();  });
+				// function openTab(url) {
+					// var a = window.document.createElement("a");
+					// a.target = '_blank';
+					// a.href = url;
 
-			// Dispatch fake click
-			var e = window.document.createEvent("MouseEvents");
-			e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-			a.dispatchEvent(e);
-};
-			openTab(downloadurl);
-			 reloadWeb();
+					// // Dispatch fake click
+					// var e = window.document.createEvent("MouseEvents");
+					// e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+					// a.dispatchEvent(e);
+				// };
+				
 			}
 		 } 
-		// if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			// alert("เข้าดาวน์โหลดมือถือ");
-			 // // openweb("http://192.168.43.48/downloadfile.html?userId='"+userId+"'&secureKey='"+secureKey+"'&alias='"+alias+"'&baseURL='"+baseURL+"'&chatServiceName='"+chatServiceName+"'&chatId='"+chatId+"'&fileId='"+fileId+"'&fileName='"+fileName+"'");
-			 // // openweb('http://192.168.43.48/downloadfile.html');
-			 
-		// }
-		// else
-			// {
-			// // var ev = document.createEvent("MouseEvents");		
-			// // ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);		
-			// // var a = document.createElement('a');
-			// // var spt = filename.split(".");
-			// // var blob = data;
-			//alert(window.URL.createObjectURL());
-			// alert("url4 : "+url1);
-			// var url = (window.URL || window.webkitURL || window || {} || URL).createObjectURL(data);
-			//window.URL = window.URL || window.webkitURL;
-			//var url = window.navigator.msSaveBlob(blob, filename);
-
-				// // var url = window.URL.createObjectURL(blob);
-			
-			 
-			// url1 = data;
-			// var url2 = atob(blob);
-			// // a.href = url;
-			// // a.download = filename;
-			// // a.dispatchEvent(ev);
-			
-			// // setTimeout(function(){
-				// // window.URL.revokeObjectURL(url);
-			// // }, 2000);  
-		// }
-		
-		
-		
 	}
 	
+	
+	function b64toBlob2(b64Data, contentType){
+		const byteCharacters = window.atob(b64Data);
+		const sliceSize=512;
+		  const byteArrays = [];
+		  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+		    const slice = byteCharacters.slice(offset, offset + sliceSize);
+	
+		    const byteNumbers = new Array(slice.length);
+		    for (let i = 0; i < slice.length; i++) {
+		      byteNumbers[i] = slice.charCodeAt(i);
+		    }
+	
+		    const byteArray = new Uint8Array(byteNumbers);
+		    byteArrays.push(byteArray);
+		  }
+		  const blob = new Blob(byteArrays, {type: contentType});
+		  return blob;
+	}
+	
+	
 	function onDownloadFileIE(data,filename){
-		// // var ev = document.createEvent("MouseEvents");
-		// // ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-		// var a = document.createElement('a');
-		// var spt = filename.split(".");
-		// var blob = new Blob([data],{type: wgMimeType[spt[1]]});
-		// var url = window.URL.createObjectURL(blob);
-		// a.href = url;
-		// a.download = filename;
-		// a.click();
-		// // a.dispatchEvent(ev);
-		// // setTimeout(function(){
-		// window.URL.revokeObjectURL(url);
-		// // }, 2000);  
 		window.navigator.msSaveBlob(data, filename);
 		
 	}
 	// The chat class will call onError when an error occurs for any reason
 	function onError(err) {
-		//alert(err);
 	}
 	
 	function endChat(){
@@ -830,7 +831,7 @@
 		{
 			var val={DisconnectReason:"Chat_UserEnd"};
 			oChat.updateUserDataChat(val);
-			end = false;
+			
 		}
 		else{
 			var val={DisconnectReason:"Chat_ChannelSelectorTimeout"};
@@ -840,8 +841,8 @@
 		oChat.endChat();
 		clearChatbox();
 		oChatStart = false;
-		wgLanguage = "TH";
-		readConfig(wgLanguage);
+		ClearCookie();
+		setCookie("username", user, 0.00001);
 		document.getElementById("emoji-chat").style.display = "none";
 		click=false;
 		document.getElementById("wg-emoji").innerHTML=""; 
@@ -854,14 +855,19 @@
 		}				
 		createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
 		createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+		wgLanguage = "TH";
+		readConfig(wgLanguage);
+		$('.btn-in-chat-download').prop('disabled', true);
 		$('#btn-Send').prop('disabled', true);
 		$('#uploadfile').prop('disabled', true);
 		$('#btn-emoji').prop('disabled', true);
 		document.getElementById("btn-emoji").disabled = true;
 		$('#messagechat').prop('disabled', true);
-		
-		ClearCookie();
-		
+		rehistory = 0;
+		setTimeout(function(){
+					createBtnReChat(wgBtnChat);
+					$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
+				}, 2000);  	
 	}
 	
 	$(document).on('keypress','textarea[name=messagechat]',function(e) { 
@@ -870,10 +876,10 @@
 		} 
 	});
 	
+	
+	
 	function timefilter(dataArr) {
-		// createMessage(wgSelect,text); 
-		// createBtnInChat("chselect");
-		
+
 		var obj = {};
 		var x ;
 		obj = dataArr.split(",");
@@ -887,31 +893,24 @@
 			
 			
 		 }
-		// else
-		// {
-			// createMessage(wgMsgMari,msg);
-		// }
+
 	}
 	function openemail() {
-		// createEmail(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["AskSMS"]);
-		window.open("http://www3.truecorp.co.th/contact_us/cm", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+		
+		var val={DisconnectReason:"Chat_UserSwitchTo_Email"};
+		oChat.updateUserDataChat(val);
+		endChat();
 		
 	}
 	function selectq() {
-		// $('#li-btn-selecter').empty();
 		chanelselect = false;
 		document.getElementById('li-btn-selecter').parentNode.removeChild(document.getElementById('li-btn-selecter'));
 		
-		// isewt = false;
 		createSms(wgMsgMari,wgSystem[wgLanguage]["messageresponse"]["AskSMS"]);
-		 SmsTime = setTimeout(function(){
-				document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
-				// for(var j=0;j<SplashMes.length;j++){		
-					createMessage(wgMsgMariload,SplashMes[0]);					
-				// }		
-						
-				clearTimeout(timeselecter);
-				
+		SmsTime = setTimeout(function(){
+			document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
+			createMessage(wgMsgMariload,SplashMes[0]);										
+			clearTimeout(timeselecter);		
 			},timeSms);
 	}
 	
@@ -921,32 +920,120 @@
 		}
 	});
 	
-	// $(document).on('keyup','textarea[name=messagechat]',function(e) { 
-		// if(oChatStart){
-			// oChat.stopTypingChat();
-		// }
-	// });
 	
 	function attach(fileup){	
+		// oChat.checkmimetypecustomer(fileup[0],fileup);
 		oChat.uploadfileChat(fileup);
+			  
 	}
 	
-	function Selectewt() {
-		var str = "Visit W3Schools!"; 
-		var n = str.search("W3Schools");
-		document.getElementById("demo").innerHTML = n;
-	}
+	
 	function submitSms(){
 		isewt = false;
 		var smsval={SMSContactNumber:$('#sms').val().trim()};
-		oChat.updateUserDataChat(smsval);
-		document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
-		for(var j=0;j<1;j++){		//SplashMes.length
-			createMessage(wgMsgMariload,SplashMes[j]);					}		
-			isewt = false;		
-			clearTimeout(timeselecter);
-			clearTimeout(SmsTime);
+		if($('#sms').val().trim().length < 10)
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["phonenumber"]);
+		}
+		else
+		{
+			oChat.updateUserDataChat(smsval);
+			document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
+			for(var j=0;j<1;j++){	//SplashMes.length
+				createMessage(wgMsgMariload,SplashMes[j]);					}		
+				isewt = false;		
+				clearTimeout(timeselecter);
+				clearTimeout(SmsTime);
+		}
 	}
+
+	function stopRefresh(){
+		oChat._stopChatRefresh();
+	}
+	
+	function chathistoryview(chatallhistory){
+		scrolltext = false;
+			var numcol = chatallhistory.message.length;
+			var numlast = chatallhistory.message.length;
+			rehistory = parseInt(rehistory);
+			var now = false;
+			for(j = 0;j < (rehistory-1); j++)
+			{	
+
+				if(j != (rehistory-1) && numcol != 0 && chatallhistory.message.length != 1)  
+				{
+					do{
+						numcol--;
+						if(numcol == 0 && new Date(chatallhistory.message[numcol+1].starttime)- new Date(chatallhistory.message[numcol].starttime) == 0)
+						{
+							dateold = new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleDateString()+" "+new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleTimeString();
+							break;
+						}
+						else
+						{
+							try {
+							  new Date(chatallhistory.message[numcol-1].starttime)
+							}
+							catch(err) {
+								if(numcol == 0)
+								{									
+									dateold = new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleDateString()+" "+new Date(chatallhistory.message[chatallhistory.message.length-1].starttime).toLocaleTimeString();	
+								}
+								break;
+							}
+						}
+					  }
+					  while (new Date(chatallhistory.message[numcol-1].starttime)- new Date(chatallhistory.message[numcol].starttime) == 0 && j < (rehistory-1) );
+				
+					for(var i = numcol; i < numlast; i++) {
+						var obj = chatallhistory.message[i].type;
+						var obj1 = chatallhistory.message[i].text;
+						var obj2 = chatallhistory.message[i].starttime;
+						onMessageReceived(obj,"","",obj1,"");
+						var obj3 = new Date(obj2);
+						if(i == numcol && j != 0 && numcol != 0)
+						{
+							createMessagehistory(wgMsgCustomer,obj3.toLocaleDateString()+" "+obj3.toLocaleTimeString()); 
+						}
+						else if(i == numcol && j == 0 && numcol != 0)
+						{
+							createBtnInChathistory(wgBtntabmessagehistoryfirst);
+							$('#btn-history').text(wgSystem[wgLanguage]["messageresponse"]["tabmessagehistoryfirst"]);
+							createMessagehistory(wgMsgCustomer,obj3.toLocaleDateString()+" "+obj3.toLocaleTimeString()); 
+						}
+						if(obj == "wgMsgAgent" && numcol != 0)
+						{
+							createMessage(wgMsgAgent,obj1,"history"); 	
+						}
+						else if(obj == "wgMsgCustomer" && numcol != 0)
+						{
+							createMessage(wgMsgCustomer,obj1,"history"); 
+						}
+					}
+				}
+				if(j == (rehistory-2))
+				{
+					if(now == false)
+					{
+						createMessagehistory(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["tabmessagenow"]); 
+						now = true;
+					}if(numcol == 0)
+					{
+						onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alertoldhistory"]);
+					}
+				}
+				numlast = numcol;
+			}
+			
+			chat = "ChatCookie";
+			requestChat();
+				document.getElementById("imgloader").style.display = "none";
+				$(".comfirm-end-background").addClass("hide");
+				
+	}	
+
+
+	
 	
 	
 	

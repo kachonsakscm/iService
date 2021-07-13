@@ -1,14 +1,22 @@
 var timeselecter;
 var wgDateMessage;
+var numhistory = 0;
 var oAction = {
 	MsgTemplate: function(message) {}
 }
 
-function createMessage(msgFrom,msgText){
-	wgDateMessage = createWgDateMessage();
-	var listChat  = wgAction.createElement(tagList);
-	listChat.id   = tagList + wgAction.getElementById(wgUlChatId).childNodes.length;;
+function createMessage(msgFrom,msgText,redate){
+	if(redate == "history")
+	{
+		wgDateMessage="";
+	}else
+	{
+		wgDateMessage = createWgDateMessage();
+	}
 	
+	var listChat  = wgAction.createElement(tagList);
+	numhistory = numhistory - 1;
+	listChat.id   = tagList + numhistory;
 	var template = "<div class='"+msgFrom["headclass"]+"'>";
 	if(msgFrom["position"] == "right"){
 		template+= "	<span class='"+msgFrom["timeclass"]+"'>"+wgDateMessage+"</span>"
@@ -21,17 +29,10 @@ function createMessage(msgFrom,msgText){
 				+  "	<span class='"+msgFrom["timeclass"]+"'>"+wgDateMessage+"</span>"
 				;
 	}
-	// else if(msgFrom["subject"] == "select"){
-		// template+= "	<img src='"+msgFrom["img"]+"'>"
-				// +  "	<span class='"+msgFrom["headnameclass"]+"'>"+msgFrom["name"]+"</span>"
-				// +  "	<span class='"+msgFrom["timeclass"]+"'>"+wgDateMessage+"</span>"
-				// +  "	<button type='button' class='quick-reply' id='btn-SmsN' onclick='submitSms();'></button>"
-				// ;
-	// } 
 	if(msgFrom["position"] == "load")
 	{
 	template += "</div>"
-			 + "<div class='"+msgFrom["bodyclass"]+"'>"+msgText+" "+"<img src='https://survey.truecorp.co.th/web/img/loading.gif' width='30' height='8' style='display:inline-block;'></div>"
+			 + "<div class='"+msgFrom["bodyclass"]+"'>"+msgText+" "+"<img src="+wgServer+"/"+wgImagePath+"/loading.gif width='30' height='8' style='display:inline-block;'></div>"
 			 ;
 	}
 	else
@@ -42,8 +43,38 @@ function createMessage(msgFrom,msgText){
 	}
 	listChat.innerHTML = template;				   
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);
-	focusScrollwgChatbox();
-	
+	if(scrolltext && chat == "" || chat == undefined)
+	{
+		focusScrollwgChatbox();		
+	}	
+}
+
+function createMessagehistory(msgFrom,msgText){
+	var listChat  = wgAction.createElement(tagList);
+	numhistory = numhistory - 1;
+	listChat.id   = tagList + numhistory;
+	var template = "<div class='messagehistory'><center>"+msgText+"</center></div>";
+	listChat.innerHTML = template;				   
+	wgAction.getElementById(wgUlChatId).appendChild(listChat);	
+}
+
+function createMessagehistoryfirst(msgFrom,msgText){
+	var listChat  = wgAction.createElement(tagList);
+	numhistory = numhistory - 1;
+	listChat.id   = tagList + numhistory;
+	var template = "<div class='messagehistoryfirst'><center>"+msgText+"</center></div>";
+	listChat.innerHTML = template;				   
+	wgAction.getElementById(wgUlChatId).appendChild(listChat);	
+}
+
+function createMessagedownload(msgFrom,msgText){
+	var listChat  = wgAction.createElement(tagList);
+	listChat.id   = tagList + wgAction.getElementById(wgUlChatId).childNodes.length;
+	var template = "<div class='messagedownload'><center>"+msgText+"</center></div>";
+	listChat.innerHTML = template;				   
+	wgAction.getElementById(wgUlChatId).appendChild(listChat);
+
+	document.getElementById(listChat.id).style.visibility = "hidden";
 }
 
 $(document).on('keypress keyup','input[name=textsms]',function (e) {
@@ -51,17 +82,8 @@ $(document).on('keypress keyup','input[name=textsms]',function (e) {
 		if ((e.which != 46 || $(this).val().indexOf('.') != -1) && (e.which < 48 || e.which > 57)) {
 			e.preventDefault();
 		}
-		
-		if($(this).val().length>9){	
-		
-			 // $('#btn-SmsY').prop('disabled', false);	
+		if($(this).val().length>0){	
 			document.getElementById("btn-SmsY").disabled = false;
-		}
-		if($(this).val().length<10){	
-		
-			 // $('#btn-SmsY').prop('disabled', true);
-			document.getElementById("btn-SmsY").disabled = true;
-			 
 		}
 	
     });
@@ -91,7 +113,10 @@ function createSms(msgFrom,msgText){
 			 ;
 	listChat.innerHTML = template;				   
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);
-	focusScrollwgChatbox();
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 	document.getElementById("btn-SmsY").disabled = true;
 }
 
@@ -115,14 +140,16 @@ function displayUserIntention(msgFrom,msgText){
 	template += msgText;		 
 	listChat.innerHTML = template;				   
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);
-	focusScrollwgChatbox();
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 }
 
 function createWgDateMessage(){
 	var returnDate;
 	var testtime;
 	var today  = new Date();
-	// returnDate = today.getDate()+"-"+(today.getMonth()+1)+"-"+today.getFullYear()+" "+ today.getHours()+":"+(today.getMinutes()<10?'0':'')+today.getMinutes();
 	returnDate = ((today.getHours() < 13) ? today.getHours() : (today.getHours() - 12))+ ":" 
 	+(((today.getMinutes() < 10)? "0" : "")+today.getMinutes()+" "+((today.getHours() < 12) ? "AM" : "PM"));
 	testtime = ((today.getMinutes() < 10)? "0" : "");
@@ -142,10 +169,49 @@ function createBtnInChat(btnObj){
 				 ;
 	listChat.innerHTML = template;
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);     
-	focusScrollwgChatbox();
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 }
 
+function createBtnInChathistory(btnObj){ 
+	var listChat  = wgAction.createElement(tagList);
+	listChat.id   = tagList+"-btn"+btnObj["id"];	
+	var template = "<center>"
+				 + "<button type='button' class='btn-in-chathistory' "
+				 + "id='"+btnObj["id"]+"' "
+				 + "value='"+btnObj["v"]+"' " 
+				 + "onclick='"+btnObj["oc"]+"' "
+				 + ">"+wgSystem[wgLanguage]["messageresponse"]["tabmessagehistoryfirst"]+"</button>"
+				 + "</center>"
+				 ;
+	listChat.innerHTML = template;
+	wgAction.getElementById(wgUlChatId).appendChild(listChat);     
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
+}
 
+function createBtnReChat(btnObj){ 
+	var listChat  = wgAction.createElement(tagList);
+	listChat.id   = tagList+"-btn"+btnObj["id"];	
+	var template = "<center>"
+				 + "<button type='button' class='btn-re-chat' "
+				 + "id='"+btnObj["id"]+"' "
+				 + "value='"+btnObj["v"]+"' " 
+				 + "onclick='"+btnObj["oc"]+"' "
+				 + ">"+btnObj["t"]+"</button>"
+				 + "</center>"
+				 ;
+	listChat.innerHTML = template;
+	wgAction.getElementById(wgUlChatId).appendChild(listChat);     
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
+}
 
 function createBtnSelect(btnqObj,btncanqObj,btnEmObj){ 
 	var listChat  = wgAction.createElement(tagDiv);
@@ -191,7 +257,10 @@ function createBtnSelect(btnqObj,btncanqObj,btnEmObj){
 	
 	listChat.innerHTML = template;
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);     
-	focusScrollwgChatbox();
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 	timeselecter = setTimeout(function(){ endChat();}, timeChSelect);
 }
 
@@ -308,34 +377,24 @@ function processemoji(dataArr){
 			var liObj = document.createElement('span');
 			liObj.className = "emoji-option" ;
 			liObj.id = "emoji-option"+g;
-			//liObj.data-unicode = keyParame[g];
 			liObj.styleSheets = "display:inline-block";
 			liObj.innerHTML = keyParame[g];
 			document.getElementById("wg-emoji").appendChild(liObj);  			
-		// var liObj = document.createElement('span');
-		// liObj.innerHTML = "<center><button type='button' class='btn-in-chat' id='btn-reqchat' onclick='requestChat();'>Request Chat</button></center>";
-		// document.getElementById("ul-history").appendChild(liObj);   		
 		}
 		 
 		if(h!=0){
 			prodIntentione.push(obje);
 		}
-		h++;
-	
-	 
-	 
-	  
+		h++;	  
 }
 
 function createUserIntention(pi){
 	var styleProdIntention  = "<div class='dv-generic-carousel'>"
 							+ "	<div id='prev' class='sd sd-left'>"
-							+ "		<img src='"+wgServer+"/"+wgResponsive+"/"+wgImagePath+"/btn-left.png' class='imgbtn-uin'>"
-							//+ "		<i class='fa fa-angle-left fa-lg'></i>"
+							+ "		<img src='"+wgServer+"/"+wgImagePath+"/btn-left.png' class='imgbtn-uin'>"
 							+ "	</div>"	
 							+ "	<div id='next'  class='sd sd-right'>"
-							+ "		<img src='"+wgServer+"/"+wgResponsive+"/"+wgImagePath+"/btn-right.png' class='imgbtn-uin'>"
-							//+ "		<i class='fa fa-angle-right fa-lg'></i>"
+							+ "		<img src='"+wgServer+"/"+wgImagePath+"/btn-right.png' class='imgbtn-uin'>"
 							+ "	</div>"
 							+ " <ul class='ul-gc'>"
 							;
@@ -344,7 +403,7 @@ function createUserIntention(pi){
 							for(var i=0;i<pi.length;i++){
 								listIntent += "<li>"
 											+ "	<div class='dv-thumb'> "
-											+ "		<img src='"+wgServer+"/"+wgResponsive+"/"+wgImagePath+"/"+pi[i]["picture"]+"'> "
+											+ "		<img src='"+wgServer+"/"+wgImagePath+"/"+pi[i]["picture"]+"'> "
 											+ " </div> "
 											+ "<div class='dv-title'>"	
 											+ "	<p class='p-title'>"+pi[i]["titletext"]+"</p>";
@@ -373,8 +432,6 @@ function createUserIntention(pi){
 	return styleProdIntention;
 }
 
-
-
 function typingMessage(msgFrom,msgText){
 	wgDateMessage = createWgDateMessage();
 	var listChat  = wgAction.createElement(tagList);
@@ -398,14 +455,20 @@ function typingMessage(msgFrom,msgText){
 			 
 	listChat.innerHTML = template;				   
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);
-	focusScrollwgChatbox();
+	if(chat != "ChatCookie" && rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 }
   
 function removeTyping(){
 	if(document.getElementById('liTyping')){
 		document.getElementById('liTyping').parentNode.removeChild(document.getElementById('liTyping'));
 	}  
-	focusScrollwgChatbox();
+	if(chat != "ChatCookie" && rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 }
 
 function srvTime(){
@@ -425,7 +488,6 @@ function srvTime(){
 				}
 				catch (eerr3) {
 					//AJAX not supported, use CPU time.
-					alert("AJAX not supported");
 					}
 				}
 			}
@@ -493,7 +555,6 @@ function createEmail(msgFrom){
 			 
 			 + "<center><span class='txtemail'>"+wgSystem[wgLanguage]["messageresponse"]["HeadEmail"]+"</span></center><br><span class='txtemail'>"+wgSystem[wgLanguage]["messageresponse"]["Email"]+"</span><br><input  id='email' type='text' name='textemail' class='txtboxemail' placeholder='"+wgSystem[wgLanguage]["messageresponse"]["AskEmailBox"]+"' title='' maxlength='10' required /><br>"
 			 + "<br><span class='txtemail'>"+wgSystem[wgLanguage]["messageresponse"]["ESubject"]+"<br></span><input  id='emailsubject' type='text' name='textemailsubject' class='txtboxemail' value='"+subtext+"' title='' maxlength='10' required /><br>"
-			 // + "<br><span class='txtemail'>"+wgSystem[wgLanguage]["messageresponse"]["EProduct"]+"<br></span><input  id='emailproduct' type='text' name='textemailproduct' class='txtboxemail' placeholder='"+wgSystem[wgLanguage]["messageresponse"]["AskEmailProductBox"]+"' title='' maxlength='10' required /><br><br><br>"
 			 +"<br><span class='txtemail'>"+wgSystem[wgLanguage]["messageresponse"]["EProduct"]+"<br></span><select name='cars' class='txtboxemail'><option value='"+protext+"'>"+protext+"</option>"
 			 +"<option value='saab'>Saab</option>"
 			 +"<option value='fiat'>Fiat</option>"
@@ -501,17 +562,110 @@ function createEmail(msgFrom){
 			 +"</select>"
 			 + "<input type='file' id='uploadfile1' onchange='attach(this.files);' style='display:none;'/>"
 			 + "<center><div class='attachemail' onclick=$('#uploadfile1').click(); >"
-			 + "<img src='"+wgServer+"/"+wgResponsive+"/"+wgImagePath+"/attach.png' id='uploadfile' class='imgfile' style='cursor:pointer;' width='13' height='13'>&nbsp;Attach file</div> </center>"
+			 + "<img src='"+wgServer+"/"+wgImagePath+"/attach.png' id='uploadfile' class='imgfile' style='cursor:pointer;' width='13' height='13'>&nbsp;Attach file</div> </center>"
 			 + "</div>"
 			 + "<center><button type='button' class='btn-sms' id='btn-SmsN' value='cencel' onclick='closeForm(this.value);' >"+wgSystem[wgLanguage]["messageresponse"]["btn_cancel"]+"</button><button type='button' class='btn-sms' id='btn-SmsY' onclick='submitSms() ;' >"+wgSystem[wgLanguage]["messageresponse"]["SmsY"]+"</button></center>"
 			 ;
 	
 	listChat.innerHTML = template;				   
 	wgAction.getElementById(wgUlChatId).appendChild(listChat);
-	focusScrollwgChatbox();
-	//document.getElementById("btn-SmsY").disabled = true;
-			
+	if(rehistory == 0)
+	{
+		focusScrollwgChatbox();
+	}
 	
+}
+	$( "#chat-history" ).scroll(function() {
+		if($("#chat-history").scrollTop() == 0 && serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin) {	
+				$(".comfirm-end-background").removeClass("hide");
+				document.getElementById("imgloader").style.display = "block";
+						setTimeout(function() { 
+							var list = document.getElementById("ul-history").childNodes;	
+							var numui = document.getElementById("ul-history").childNodes.length;
+							for(var i=0;i<numui;i++)
+							{
+								if((i+1) == numui)
+								{
+									if(rehistory == 0)
+									{
+										rehistory = parseInt(rehistory) + 2;
+									}else
+									{
+										rehistory = parseInt(rehistory) + 1;
+									}										
+										oChat.chathisrotyview("ทดสอบยิงapi");
+								}
+							}
+						},timereload);
+		   
+		}
+	else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
+		{
+			
+		}
+	else if($("#chat-history").scrollTop() == 0 && (serviceid == "" || !serviceid) && oChatStart == true )
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynoserviceid"]);
+		}
+	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && oChatStart == true && !agentjoin)
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynotrequest"]);
+		}
+	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && end == true)
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistoryendchat"]);
+		}
+	  // else if($("#chat-history").scrollTop() == 0 && (serviceid == ""||serviceid != "") ||( end == true )&& oChatStart != true && !agentjoin)
+		// {
+			// onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistory"]);
+		// }
+		
+	});
+	
+	function stephistory(){
+	  if(serviceid != "" && end != true && oChatStart == true &&(chat == "Chatcookie" || chat != "Chatcookie") && agentjoin) 	
+	  {
+			$(".comfirm-end-background").removeClass("hide");
+					document.getElementById("imgloader").style.display = "block";
+							setTimeout(function() { 
+								var list = document.getElementById("ul-history").childNodes;	
+								var numui = document.getElementById("ul-history").childNodes.length;
+								for(var i=0;i<numui;i++)
+								{
+								if((i+1) == numui)
+									{
+										if(rehistory == 0)
+										{
+											rehistory = parseInt(rehistory) + 2;
+										}else
+										{
+											rehistory = parseInt(rehistory) + 1;
+										}										
+										oChat.chathisrotyview("ทดสอบยิงapi");
+									}
+								}
+							},timereload);
+	  }
+	else if($("#chat-history").scrollTop() == 0 && oChatStart != true )
+		{
+			
+		}
+	else if($("#chat-history").scrollTop() == 0 && (serviceid == "" || !serviceid) && oChatStart == true )
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynoserviceid"]);
+		}
+	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && oChatStart == true && !agentjoin)
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistorynotrequest"]);
+		}
+	else if($("#chat-history").scrollTop() == 0 && serviceid != "" && end == true)
+		{
+			onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistoryendchat"]);
+		}
+	// else if($("#chat-history").scrollTop() == 0 && (serviceid == ""||serviceid != "") ||( end == true )&& oChatStart != true && !agentjoin)
+		// {
+			// onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["alerthistory"]);
+		// }
 }
 	
 $(document).on('click','#prev', function(e) { $('.ul-gc').animate({scrollLeft: "-="+$('.ul-gc').width()}, 500, 'swing');if(bul>0){buletActive(bul-1);}});
@@ -528,14 +682,14 @@ click=false; });
   clearTimeout(SmsTime);       
   SmsTime = setTimeout(function() { 
 		document.getElementById('li-btn-sms').parentNode.removeChild(document.getElementById('li-btn-sms'));
-		// for(var j=0;j<SplashMes.length;j++){		
 			createMessage(wgMsgMariload,SplashMes[0]);					
-		// }		
 		isewt = false;		
 		clearTimeout(timeselecter); }, timeSms);
 	});
-	 // document.getElementById("emoji-option").onclick = alert("11111");
-	
+$(document).on('click touchend','.messagehistoryfirst',function(e) { 		
+			stephistory();		
+});
+
 	
 
 

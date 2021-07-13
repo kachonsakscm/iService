@@ -1,5 +1,14 @@
-//var domainName = "https://survey.truecorp.co.th/webgenesys/"
-var wgServer 	 = "https://survey.truecorp.co.th/web";
+var wgServer 	 = "https://galb-dev.truecorp.co.th/iservice";
+var apiServer = "https://galb-dev.truecorp.co.th";
+var urldownloadfileChat = "https://galb-dev.truecorp.co.th/downloadResource/download";
+var urlchathisrotyview = "https://galb-dev.truecorp.co.th/getTrueChatHistory_API";
+var urlgettokenhistory = "https://galb-dev.truecorp.co.th/getTrueChatHistory_API/token";
+var urlverifytokendownload = "https://galb-dev.truecorp.co.th/downloadResource/verify/";
+var urltermitokendownload = "https://galb-dev.truecorp.co.th/downloadResource/terminatetoken/";
+var urlgettokendownload = "https://galb-dev.truecorp.co.th/downloadResource/gentoken";
+var urlcheckmimetypeagent = "https://galb-dev.truecorp.co.th/downloadResource/validatefiletype/genesys";
+var urlcheckmimetypecustomer = "https://galb-dev.truecorp.co.th/downloadResource/validatefiletype";
+var gmschat = "gms-chat";
 var wgResponsive = "responsive";
 var wgImagePath  = "img";
 var wgConfigPath = "config";
@@ -15,9 +24,9 @@ var chat ;
 var user;
 var device = "";
 var paramdevice = {};
+
 function getdevice(){
 		var url=decodeURIComponent(window.location.href).replace( /\+/g, ' ' );
-		 //alert(url);
 		var urlStep1 = url.split("?");
 		if(urlStep1.length > 1){
 			var urlStep2 = urlStep1[1].split("&");
@@ -29,42 +38,44 @@ function getdevice(){
 			device = paramdevice['Channel'];
 	}
 	getdevice();
-	// alert("ความกว้างหน้าจอ : "+window.innerWidth);
 if(window.innerWidth <= 1000)
 	{
-		 // alert("device = "+device);
-		if(device != "web")
+		if(device == "ios" || device == "android")
 		{
-			 // alert("เข้าแอพ");
 			var wgScript = [
-				{type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"chatapiResponsive.js"},
-				// {type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"jquery-1.11.1.min.js"},
-				//{type:"script",	id:"jquery-3-3-1",	path:wgServer+"/jquery-3.3.1.min.js"},
-				{type:"script",	id:"wgfunction",	path:wgServer+"/"+wgResponsive+"/"+"wgfunctionResponsive.js"},
-				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+wgResponsive+"/"+"truewebchat_widgetResponsivemobileapp.css"}	
+				{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
+				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileapp.css"}	
 			];
-		}
-		else
+		}else if(device == "trueyou")
 		{
-			 // alert("เข้าเว็บ");
 			var wgScript = [
-				{type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"chatapiResponsive.js"},
-				// {type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"jquery-1.11.1.min.js"},
-				//{type:"script",	id:"jquery-3-3-1",	path:wgServer+"/jquery-3.3.1.min.js"},
-				{type:"script",	id:"wgfunction",	path:wgServer+"/"+wgResponsive+"/"+"wgfunctionResponsive.js"},
-				// {type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+wgResponsive+"/"+"truewebchat_widgetResponsivemobileweb.css"}	
-				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+wgResponsive+"/"+"truewebchat_widgetResponsive.css"}	
+					{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+					{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+					{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
+				];
+		}else if(device == "mobile")
+		{
+			var wgScript = [
+					{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+					{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+					{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsivemobileweb.css"}	
+				];
+		}else
+		{	 
+			var wgScript = [
+				{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+				{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},	
+				{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
 			];
 		}
 	}
 else if(window.innerWidth > 1000)
 {	
 	var wgScript = [
-			{type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"chatapiResponsive.js"},
-			// {type:"script",	id:"chatapi",		path:wgServer+"/"+wgResponsive+"/"+"jquery-1.11.1.min.js"},
-			//{type:"script",	id:"jquery-3-3-1",	path:wgServer+"/jquery-3.3.1.min.js"},
-			{type:"script",	id:"wgfunction",	path:wgServer+"/"+wgResponsive+"/"+"wgfunctionResponsive.js"},
-			{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+wgResponsive+"/"+"truewebchat_widgetResponsive.css"}	
+			{type:"script",	id:"chatapi",		path:wgServer+"/"+"chatapiResponsive.js"},
+			{type:"script",	id:"wgfunction",	path:wgServer+"/"+"wgfunctionResponsive.js"},
+			{type:"link",	id:"widgetstrue" ,	path:wgServer+"/"+"truewebchat_widgetResponsive.css"}	
 		];
 }
 
@@ -98,7 +109,6 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "SystemMessageinformEWT":"รอสักครู่นะคะ เวลารอโดยประมาณคือ 15 นาทีค่ะ",
 "AskSMS":"กรอกเบอร์โทรศัพท์ทรูมูฟเอช เพื่อให้ระบบส่ง SMS แจ้งเตือนเมื่อใกล้ถึงคิวของคุณ",
 "ConfirmSMSnumber":"เมื่อใกล้ถึงคิวของคุณ ระบบจะส่ง SMS แจ้งเตือนไปที่เบอร์ ",
-// "ChatStarted":" ระบบกำลังส่งข้อมูลไปยังเจ้าหน้าที่นะคะ",
 "ChatStarted":"เพื่อความรวดเร็ว คุณสามารถตรวจสอบข้อมูลต่างๆ ด้วยตัวเองได้ง่ายๆ โดยการใช้งานระบบอัตโนมัติ ผ่าน <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> หรือ Application TrueiService ซึ่ง download ได้จาก App Store สำหรับ ios หรือ Play Store สำหรับ Android ระบบกำลังส่งข้อมูลไปยังเจ้าหน้าที่ค่ะ",
 "endchat":"ขอบคุณที่ใช้บริการทรู แคร์ แชทค่ะ",
 "startchat1":"พิมพ์ข้อความที่นี",
@@ -112,10 +122,13 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "AskSMSBox":" 089XXXXXXX",
 "Textsent":"พิมพ์ข้อความที่นี่...",
 "typing":"กำลังพิมพ์ ...",
-"Joinedchat":"เข้าสู่การสนทนา ",
-"DownloadButton":"ดาวน์โหลด ",
+"Joinedchat":"เข้าสู่การสนทนา ทรูขออนุญาตบันทึกการสนทนาในครั้งนี้ โดยข้อมูลการสนทนา จะนำไปใช้เพื่อปรับปรุงการให้บริการเท่านั้น ",
+"DownloadButton":"ดาวน์โหลด",
+"DownloadButtonios":"กดยืนยันการดาวน์โหลด",
 "Leftchat":"ออกจากการสนทนา",
 "iserviceendchat":"หากต้องการสนทนาอีกครั้ง กรุณากดย้อนกลับและทำรายการใหม่อีกครั้ง",
+"btniserviceendchat":"เริ่มต้นสนทนาอีกครั้ง",
+"phonenumber":"กรุณาตรวจสอบหมายเลขโทรศัพท์ของท่าน",
 "EWT":"คุณจะได้รับบริการใน _X_ นาที หากต้องการรับบริการต่อกรุณาเลือก 'ตกลง' หรือสามารถเลือกทำรายการอื่นได้ค่ะ",
 "ChatEndQuestion":"ต้องการสิ้นสุดการสนทนาหรือไม่?",
 "CancelChatEnd":"ต้องการสิ้นสุดรายการสนทนาหรือไม่?",
@@ -125,6 +138,7 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "Error-File-Types":"นามสกุลไฟล์ของคุณไม่ตรงตามที่กำหนดไว้",
 "Error-Upload-Max-Files":"จำนวนไฟล์ทั้งหมดเกินที่กำหนดไว้",
 "Error-Max-Total-Size":"ขนาดของไฟล์ทั้งหมดเกินที่กำหนดไว้",
+"Error-File-Types-Agent":"ไฟล์อันตรายไม่สามารถดาวน์โหลดได้",
 "Error-102":"ไม่สามารถเข้าสู่ระบบสนทนาได้ กรุณาลองใหม่อีกครั้ง",
 "Error-103":"ไม่สามารถเข้าสู่ระบบสนทนาได้ กรุณาลองใหม่อีกครั้ง",
 "Error-161":"ไม่สามารถเข้าสู่ระบบสนทนาได้ กรุณาลองใหม่อีกครั้ง",
@@ -157,7 +171,15 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "AskEmailBox" :" กรุณาระบุอีเมล์ของท่าน",
 "AskEmailSubjectBox" :" เรื่องที่ต้องการสอบถาม",
 "AskEmailProductBox" :" กรุณาเลือกประเภทสินค้า",
-"HeadEmail":"กรุณาทำรายการด้านล่างนี้"
+"HeadEmail":"กรุณาทำรายการด้านล่างนี้",
+"tabmessagenow":"ข้อความปัจุบัน",
+"tabmessagehistory":"ข้อความก่อนหน้า",
+"tabmessagehistoryfirst":"ตรวจสอบประวัติการสนทนา",
+"alerthistory":"ไม่สามารถดูประวัติการสนทนาได้ในขณะนี้",
+"alerthistorynotrequest":"กรุณารอเจ้าหน้าที่ตอบกลับสักครู่ค่ะ ",
+"alerthistorynoserviceid":"กรุณา Log in เพื่อดูประวัติสนทนา",
+"alerthistoryendchat":"ไม่สามารถดูประวัติสนทนาได้ หากยังไม่ได้คลิกปุ่มเริ่มต้นสนทนา ",
+"alertoldhistory":"ไม่สามารถแสดงรายการของก่อนวันที่ "
 }; 
  var dataMessageEN={
 "Greeting":"สวัสดีค่ะ ทรูแคร์แชทยินดีให้บริการค่ะ . Hello welcome to True Care Chat service. ",
@@ -171,7 +193,6 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "AskSMS":"Please identify TrueMove H mobile number to receive an SMS alert when you are first in the queue. ",
 "ConfirmSMSnumber":"SMS alert will be sent to ",
 "Textsent":"Type your message... ",
-//"ChatStarted":"The system will transfer your information to an agent, please wait for a moment. ",
 "ChatStarted":"For speedy service,  you can check various information by yourself easily by using automated systems via <a href='https://iservice.truecorp.co.th/' target='_blank'>www.TrueiService.com </a> or Application TrueiService which can be downloaded from App Store for ios or Play Store for Android. Information is being transferred to one of our customer representatives.",
 "btn_q":"OK",
 "btn_ok":"OK",
@@ -184,8 +205,11 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "typing":"typing...",
 "Joinedchat":"Joined In Chat",
 "DownloadButton":"Download",
+"DownloadButtonios":"Click Confirm to Download.",
 "Leftchat":"Left the chat",
-"iserviceendchat":"หากต้องการสนทนาอีกครั้ง กรุณากดย้อนกลับและทำรายการใหม่อีกครั้ง",
+"iserviceendchat":"If you wish to continue the conversation, please press 'return' to make the transaction again.",
+"btniserviceendchat":"Start chatting again",
+"phonenumber":"Please check your telephone number.",
 "EWT":"Your request chat will be responded in _X_ mins. Choose 'OK' to continue waiting in the line, or end email instead",
 "ChatEndQuestion":"To end the conversation?",
 "CancelChatEnd":"To continue waiting in the line?",
@@ -195,6 +219,7 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "Error-File-Types":"Incorrect file type",
 "Error-Upload-Max-Files":"The files are exceeded the designation amounts",
 "Error-Max-Total-Size":"Oversize file",
+"Error-File-Types-Agent":"Dangerous files cannot be downloaded",
 "Error-102":"Cannot start joined in chat, please try again later",
 "Error-103":"Cannot start joined in chat, please try again later",
 "Error-161":"Cannot start joined in chat, please try again later",
@@ -227,7 +252,15 @@ var dataMessageTH={"Greeting":"สวัสดีค่ะ ทรูแคร์
 "AskEmailBox" :" please input your email",
 "AskEmailSubjectBox" :" Subject",
 "AskEmailProductBox" :" Please select product",
-"HeadEmail":"Please fill the box below"
+"HeadEmail":"Please fill the box below",
+"tabmessagenow":"Current messages",
+"tabmessagehistory":"ข้อความก่อนหน้า",
+"alerthistory":"can not see history . please try again later.",
+"alerthistorynotrequest":"Please wait for the staff to respond. ",
+"alerthistorynoserviceid":"Please log in to see the Chat history.",
+"alertoldhistory":"Cannot display items before ",
+"alerthistoryendchat":"can not see history . Please Click the start conversation button.",
+"tabmessagehistoryfirst":"Checking conversation"
  };
 
  
@@ -300,12 +333,13 @@ var UserIntentionEN = [
 var emoji = ["😁","😂","😃","😄","😆","😊","😍","😘","😚","😩","😫","😭","😷","😺","😻"];
 var btn_Q = true;
 var btn_CancelQ = true;
-var btn_Email = true;
-var WorkStartEng = 8;
+var btn_Email = false;
+var WorkStartEng = 8 ;
 var WorkStopEng = 23;	
+var wgBtntabmessagehistoryfirst = {id:"btn-history",t:"wgSystem[wgLanguage]['messageresponse']['tabmessagehistoryfirst']",v:"",oc:"stephistory();" };
 var wgBtnEng = {id:"btn-eng",t:"english",v:"EN",oc:"clearTimeEng();readConfig(this.value);afterSelectLanguage();" };
-var wgBtnChat = {id:"btn-startchat",t:"startchat",v:"",oc:"reloadWeb();" };
-// var wgBtnRequestChat = {id:"btn-reqchat",t:"Request Chat",v:"",oc:"requestChat();" };
+var wgBtnChat = {id:"btn-startchat",t:"startchat",v:"",oc:"openForm();end=false;" };
+var wgBtnreChat = {id:"btn-restartchat",t:"startchat",v:"",oc:"openForm();" };
 var wgBtnQ = {id:"btn-q",t:"",v:"q",oc:"selectq();clearTimeout(timeselecter);" };
 var wgBtnCancelQ = {id:"btn-canq",t:"",v:"cancel",oc:"closeForm(this.val);" };
 var wgBtnEmail = {id:"btn-email",t:"",v:"email",oc:"openemail();clearTimeout(timeselecter);" };
@@ -315,6 +349,7 @@ var wgAction = document;
 var wgChatboxId = "wgChatbox";
 var wgDivChatId = "chat-history";
 var wgUlChatId = "ul-history";
+var wgBackGID = "comfirm-end-background";
 var wgSystem = {
 	TH:	{
 		agent:"Agent",customer:"You",external:"System",mari:"MARI",messageresponse:dataMessageTH,userintention:UserIntentionTH
@@ -332,12 +367,12 @@ var wgMimeType = {
 	doc:"application/msword",docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",pdf:"application/pdf",
 	jar:"application/java-archive",json:"application/json",ppt:"application/vnd.ms-powerpoint",
 	rar:"application/x-rar-compressed",xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-	xml:"application/xml",zip:"application/zip",z7:"application/x-7z-compressed"
+	xml:"application/xml",zip:"application/zip",z7:"application/x-7z-compressed",tif:"image/tiff"
 	};
 var wgMsgMari = {
 	position : "",
 	headclass : "message-data",
-	img : wgServer+"/"+wgResponsive+"/"+wgImagePath+"/"+ wgImage["mari"],
+	img : wgServer+"/"+wgImagePath+"/"+ wgImage["mari"],
 	name : wgSystem[wgLanguage]["mari"],
 	headnameclass : "message-data-name",
 	timeclass : "message-data-time",
@@ -346,7 +381,7 @@ var wgMsgMari = {
 var wgMsgMariload = {
 	position : "load",
 	headclass : "message-data",
-	img : wgServer+"/"+wgResponsive+"/"+wgImagePath+"/"+ wgImage["mari"],
+	img : wgServer+"/"+wgImagePath+"/"+ wgImage["mari"],
 	name : wgSystem[wgLanguage]["mari"],
 	headnameclass : "message-data-name",
 	timeclass : "message-data-time",
@@ -355,7 +390,7 @@ var wgMsgMariload = {
 var wgMsgAgent = {
 	position : "",
 	headclass : "message-data",
-	img : wgServer+"/"+wgResponsive+"/"+wgImagePath+"/"+ wgImage["agent"],
+	img : wgServer+"/"+wgImagePath+"/"+ wgImage["agent"],
 	name : wgSystem[wgLanguage]["agent"],
 	headnameclass : "message-data-name",
 	timeclass : "message-data-time",
@@ -364,7 +399,7 @@ var wgMsgAgent = {
 var wgMsgCustomer = {
 	position : "right",
 	headclass : "message-data  align-right",
-	img : wgServer+"/"+wgResponsive+"/"+wgImagePath+"/"+ wgImage["customer"],
+	img : wgServer+"/"+wgImagePath+"/"+ wgImage["customer"],
 	name : wgSystem[wgLanguage]["customer"],
 	headnameclass : "message-data-name",
 	timeclass : "message-data-time",
@@ -376,7 +411,7 @@ var timeReadCsv = 500;
 var timeChSelect = 180000;
 var prodIntention = [];
 var webSystax = ["http://","https://","\\.co","\\.th","www\\."];
-var ewttime = 0;  //900
+var ewttime = 0;  //3600
 var bul = 0;
 var listproduct = [{id:"TMH",	value:"TrueMoveH"},
 	{id:"TVS",	value:"TrueVision"},
@@ -387,4 +422,104 @@ var internet = true;
 var userintention = "";
 var url1 = "";
 var timeSms = 30000;
-
+var timehis = 3;
+var titlenoti = "ทดสอบ";
+var bodynoti = "ระบบ";
+var timerestartchat = 1000;
+var timereload = 1000;
+var agentjoin = false;
+var scrolltext = true;
+var checklist = {
+    "whilelist": [
+	{
+			"header": "fff15080",
+			"type": "audio/vnd.dlna.adts",
+	},
+	{
+			"header": "424df63",
+			"type": "image/bmp",
+	},
+	{
+			"header": "22416374",
+			"type": "application/vnd.ms-excel",
+	},
+	{
+			"header": "504b34",
+			"type": "New Microsoft Word Document.doc",
+	},
+	{
+			"header": "504b34",
+			"type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	},
+	{
+			"header": "47494638",
+			"type": "image/gif",
+	},
+	{
+			"header": "3c21444f",
+			"type": "text/html",
+	},
+	{
+			"header": "3c68746d",
+			"type": "text/html",
+	},
+	{
+			"header": "ffd8ffe0",
+			"type": "image/jpeg",
+	},
+	{
+			"header": "4944334",
+			"type": "audio/mp3",
+	},
+	{
+			"header": "25504446",
+			"type": "application/pdf",
+	},
+	{
+			"header": "89504e47",
+			"type": "image/png",
+	},
+	{
+			"header": "504b34",
+			"type": "application/vnd.ms-powerpoint",
+	},
+	{
+			"header": "504b34",
+			"type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+	},
+	{
+			"header": "49492a0",
+			"type": "image/tiff",
+	},
+	{
+			"header": "2d206d61",
+			"type": "text/plain",
+	},
+	{
+			"header": "68656c6c",
+			"type": "text/plain",
+	},
+	{
+			"header": "52494646",
+			"type": "audio/wav",
+	},
+	{
+			"header": "3026b275",
+			"type": "video/x-ms-wmv",
+	},
+	{
+			"header": "504b34",
+			"type": "application/vnd.ms-excel",
+	},
+	{
+			"header": "504b34",
+			"type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	},
+]};
+var tokendownload = "";
+var tokenhistory = "";
+var expirytoken = false;
+var Hisuser = "histest";
+var Hispass = "password";
+var verify = "Z25z";
+var checkfiletype = false;

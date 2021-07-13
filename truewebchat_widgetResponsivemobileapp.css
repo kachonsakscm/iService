@@ -1,179 +1,117 @@
-*{
-	/* font-family:'TrueMedium'!important; */
-	font-family:'true_mediumregular';
+
+@font-face {
+    font-family: 'True medium'; /*a name to be used later*/
+    src: url('https://survey.truecorp.co.th/web/true_medium-webfont.ttf'); /*URL to font*/
 }
-/* @media screen and (max-width:2560px){ */
-	/* .wgChatbox{ */
-		/* width: 38%; */
-		/* height: 100%; */
-		/* right: 30%;	 */
-	/* } */
-	/* .wgChatbox-head{ */
-		/* height: 7%; */
-	/* } */
-	/* .wgChatbox-footer{ */
-		/* height: 7%; */
-	/* } */
-	/* .wgChatbox-body{ */
-		/* height: 86.5%; */
-	/* } */
-	/* .wgChatbox-head .span1 .span1-1{ */
-		/* width:2.525em; */
-		/* height:2.525em;	 */
-	/* } */
-	/* .wgChatbox-head .span2 .span2-1{ */
-		/* font-size:2.5em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message-data { */
-		/* font-size: 1.4em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message  { */
-		/* font-size:1.5em;	 */
-	/* } */
-	/* .wgChatbox-body .chat-history ul { */
-		/* padding: 0.000em 1.250em 0.000em 0.000em; */
-	/* } */
-	/* .dv-generic-carousel .sd-right { */
-		/* top:10em;	 */
-	/* } */
-	/* .dv-generic-carousel .sd-left {  */
-		/* top:10em; */
-	/* } */
-	/* button.btn-in-chat{	 */
-		/* font-size:1.00em;	 */
-	/* } */
-	/* .wgChatbox-footer .span2 textarea{ */
-		/* width: 96%; */
-		/* font-size:1.6em; */
-	/* } */
-	/* .imgsend{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgemoji{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgfile{ */
-		/* padding-top:0.50em;  */
-		/* width: 1.4em; */
-		/* height: 1.4em; */
-	/* } */
-	/* .emoji-chat{ */
-		/* position: fixed; */
-		/* font-size:1.4em;	 */
-		/* bottom: 2em; */
-	/* } */
-	/* .imgbtn-uin{ */
-		/* width:2em; */
-	/* } */
-	/* .span4{ */
-		/* width:7%; */
-	/* } */
-/* } */
+*{
+	font-family:'True medium'!important; 
+	/* font-family:'true_mediumregular'; */
+}
+
 /* @media screen and (max-width:2000px){ */
 	/* .wgChatbox{ */
-		/* width: 38%; */
+		/* width: 100%; */
 		/* height: 100%; */
-		/* right: 30%;	 */
+		/* right: 0%; */
 	/* } */
 	/* .wgChatbox-head{ */
-		/* height: 8%; */
+		/* height: 10%; */
 	/* } */
 	/* .wgChatbox-footer{ */
-		/* height: 8%; */
+		/* height: 10%; */
 	/* } */
 	/* .wgChatbox-body{ */
-		/* height: 84.5%; */
+		/* height: 90%; */
 	/* } */
 	/* .wgChatbox-head .span1 .span1-1{ */
-		/* width:2.525em; */
-		/* height:2.525em;	 */
+		/* width:50%; */
+		/* height:70%;	 */
 	/* } */
 	/* .wgChatbox-head .span2 .span2-1{ */
-		/* font-size:2.5em; */
+		/* font-size:200%; */
 	/* } */
 	/* .wgChatbox-body .chat-history .message-data { */
-		/* font-size: 1.4em; */
+		/* font-size: 1.2em; */
 	/* } */
 	/* .wgChatbox-body .chat-history .message  { */
-		/* font-size:1.5em;	 */
+		/* font-size:1.2em; */
+		/* line-height: 1.5em;	 */
 	/* } */
 	/* .wgChatbox-body .chat-history ul { */
-		/* padding: 0.000em 1.250em 0.000em 0.000em; */
+		/* padding-right: 1.250em ; */
 	/* } */
 	/* .dv-generic-carousel .sd-right { */
-		/* top:62%;	 */
+		/* top:47%;	 */
 	/* } */
 	/* .dv-generic-carousel .sd-left {  */
-		/* top:62%; */
+		/* top:47%; */
 	/* } */
 	/* button.btn-in-chat{	 */
 		/* font-size:1.00em;	 */
 	/* } */
 	/* .wgChatbox-footer .span2 textarea{ */
-		/* width: 96%; */
-		/* font-size:1.6em; */
+		/* width: 90%; */
+		/* font-size:1.2em; */
+		/* height: 70%; */
 	/* } */
 	/* .imgsend{ */
 		/* width: 2em; */
 		/* height: 2em; */
 	/* } */
 	/* .imgemoji{ */
-		/* width: 2em; */
-		/* height: 2em; */
+		/* width: 85%; */
+		/* height: 85%; */
 	/* } */
 	/* .imgfile{ */
 		/* padding-top:0.50em;  */
-		/* width: 1.4em; */
-		/* height: 1.4em; */
+		/* width: 65.5%; */
+		/* height: 50.5%; */
+		
 	/* } */
 	/* .emoji-chat{ */
-		/* position: fixed; */
-		/* font-size:1.4em;	 */
+		/* position:absolute ; */
+		/* font-size:2em;	 */
 		/* bottom: 2em; */
 	/* } */
 	/* .imgbtn-uin{ */
-		/* width:2em; */
+		/* width:2.2em; */
 	/* } */
 	/* .span4{ */
-		/* width:7%; */
+		/* width:12%; */
 	/* } */
 /* } */
-@media screen and (max-width:9000px){
+
+@media screen and (orientation:portrait) {
 	.wgChatbox{
-		width: 25em;
-		/* min-width: 413px; */
-		/* max-width: 38%; */
+		width: 100%;
 		height: 100%;
 		right: 0%;
-		left: 0%;
-		margin: auto;
 	}
 	.wgChatbox-head{
-		height: 8%;
+		height: 10%;
 	}
 	.wgChatbox-footer{
-		height: 8%;
+		height: 10%;
 	}
 	.wgChatbox-body{
-		height: 80%;
+		height: 90%;
 	}
 	.wgChatbox-head .span1 .span1-1{
-		width:2.525em;
-		height:2.525em;	
+		width:50%;
+		height:70%;	
 	}
 	.wgChatbox-head .span2 .span2-1{
-		font-size:2.5em;
+		font-size:200%;
 	}
 	.wgChatbox-body .chat-history .message-data {
-		font-size: 1.4em;
+		font-size: 1.2em;
 	}
 	.wgChatbox-body .chat-history .message  {
-		font-size:1.5em;	
+		font-size:1.2em;
+		line-height: 1.5em;	
 	}
 	.wgChatbox-body .chat-history ul {
-		padding: 0.000em 1.250em 0.000em 0.000em;
+		padding-right: 1.250em ;
 	}
 	.dv-generic-carousel .sd-right {
 		top:47%;	
@@ -185,330 +123,115 @@
 		font-size:1.00em;	
 	}
 	.wgChatbox-footer .span2 textarea{
-		width: 96%;
-		font-size:1.6em;
+		width: 90%;
+		font-size:1.2em;
+		height: 70%;
 	}
 	.imgsend{
 		width: 2em;
 		height: 2em;
 	}
 	.imgemoji{
-		width: 2em;
-		height: 2em;
+		width: 85%;
+		height: 85%;
 	}
 	.imgfile{
 		padding-top:0.50em; 
-		width: 1.4em;
-		height: 1.4em;
+		width: 65.5%;
+		height: 50.5%;
+		
 	}
 	.emoji-chat{
-		position: fixed;
-		font-size:1.4em;	
+		position:absolute ;
+		font-size:2em;	
 		bottom: 2em;
-		width: 15%;
 	}
 	.imgbtn-uin{
-		width:2em;
+		width:2.2em;
 	}
 	.span4{
-		width:7%;
+		width:12%;
 	}
 	.imgloader{
 		width:20%;
-		height:15%;
+		height:12%;
 		padding-top:80%;
 		padding-left:40%;
 	}
 }
-@media screen and (max-width:414px){
-	.wgChatbox{
+
+@media screen and (orientation:landscape) {
+   .wgChatbox{
 		width: 100%;
-		/* min-width: 413px; */
-		/* max-width: 38%; */
 		height: 100%;
 		right: 0%;
-		left: 0%;
-		margin: auto;
 	}
 	.wgChatbox-head{
-		height: 7%;
+		height: 10%;
 	}
 	.wgChatbox-footer{
-		height: 7%;
+		height: 10%;
 	}
 	.wgChatbox-body{
-		height: 88.5%;
+		height: 86%;
 	}
 	.wgChatbox-head .span1 .span1-1{
-		width:2.525em;
-		height:2.525em;	
+		width:50%;
+		height:70%;	
 	}
 	.wgChatbox-head .span2 .span2-1{
-		font-size:2.5em;
+		font-size:200%;
 	}
 	.wgChatbox-body .chat-history .message-data {
-		font-size: 1.4em;
+		font-size: 1.2em;
 	}
 	.wgChatbox-body .chat-history .message  {
-		font-size:1.5em;	
+		font-size:1.2em;
+		line-height: 1.5em;	
 	}
 	.wgChatbox-body .chat-history ul {
-		padding: 0.000em 1.250em 0.000em 0.000em;
+		padding-right: 1.250em ;
 	}
 	.dv-generic-carousel .sd-right {
-		top:48%;	
+		top:47%;	
 	}
 	.dv-generic-carousel .sd-left { 
-		top:48%;
+		top:47%;
 	}
 	button.btn-in-chat{	
 		font-size:1.00em;	
 	}
 	.wgChatbox-footer .span2 textarea{
-		width: 96%;
-		font-size:1.6em;
+		width: 90%;
+		font-size:1.2em;
+		height: 70%;
 	}
 	.imgsend{
 		width: 2em;
 		height: 2em;
 	}
 	.imgemoji{
-		width: 2em;
-		height: 2em;
+		width: 85%;
+		height: 85%;
 	}
 	.imgfile{
 		padding-top:0.50em; 
-		width: 1.4em;
-		height: 1.4em;
+		width: 65.5%;
+		height: 50.5%;
+		
 	}
 	.emoji-chat{
-		position: fixed;
-		font-size:1.4em;	
+		position:absolute ;
+		font-size:2em;	
 		bottom: 2em;
-		width: 75%;
 	}
 	.imgbtn-uin{
-		width:2em;
+		width:2.2em;
 	}
 	.span4{
-		width:9%;
-	}
-	.imgloader{
-		width:20%;
-		height:15%;
-		padding-top:80%;
-		padding-left:40%;
+		width:12%;
 	}
 }
-/* @media screen and (max-width:1500){ */
-	/* .wgChatbox{ */
-		/* width: 38%; */
-		/* height: 100%; */
-		/* right: 30%;	 */
-	/* } */
-	/* .wgChatbox-head{ */
-		/* height: 10%; */
-	/* } */
-	/* .wgChatbox-footer{ */
-		/* height: 10%; */
-	/* } */
-	/* .wgChatbox-body{ */
-		/* height: 80%; */
-	/* } */
-	/* .wgChatbox-head .span1 .span1-1{ */
-		/* width:2.525em; */
-		/* height:2.525em;	 */
-	/* } */
-	/* .wgChatbox-head .span2 .span2-1{ */
-		/* font-size:2.5em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message-data { */
-		/* font-size: 1.4em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message  { */
-		/* font-size:1.5em;	 */
-	/* } */
-	/* .wgChatbox-body .chat-history ul { */
-		/* padding: 0.000em 1.250em 0.000em 0.000em; */
-	/* } */
-	/* .dv-generic-carousel .sd-right { */
-		/* top:52%;	 */
-	/* } */
-	/* .dv-generic-carousel .sd-left {  */
-		/* top:52%; */
-	/* } */
-	/* button.btn-in-chat{	 */
-		/* font-size:1.00em;	 */
-	/* } */
-	/* .wgChatbox-footer .span2 textarea{ */
-		/* width: 96%; */
-		/* font-size:1.6em; */
-	/* } */
-	/* .imgsend{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgemoji{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgfile{ */
-		/* padding-top:0.50em;  */
-		/* width: 1.4em; */
-		/* height: 1.4em; */
-	/* } */
-	/* .emoji-chat{ */
-		/* position: fixed; */
-		/* font-size:1.4em;	 */
-		/* bottom: 2em; */
-	/* } */
-	/* .imgbtn-uin{ */
-		/* width:2em; */
-	/* } */
-	/* .span4{ */
-		/* width:7%; */
-	/* } */
-/* } */
-
-/* @media screen and (max-width:1300px){ */
-	/* .wgChatbox{ */
-		/* width: 38%; */
-		/* height: 100%; */
-		/* right: 30%;	 */
-	/* } */
-	/* .wgChatbox-head{ */
-		/* height: 8%; */
-	/* } */
-	/* .wgChatbox-footer{ */
-		/* height: 8%; */
-	/* } */
-	/* .wgChatbox-body{ */
-		/* height: 84%; */
-	/* } */
-	/* .wgChatbox-head .span1 .span1-1{ */
-		/* width:2.525em; */
-		/* height:2.525em;	 */
-	/* } */
-	/* .wgChatbox-head .span2 .span2-1{ */
-		/* font-size:2.5em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message-data { */
-		/* font-size: 1.4em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message  { */
-		/* font-size:1.5em;	 */
-	/* } */
-	/* .wgChatbox-body .chat-history ul { */
-		/* padding: 0.000em 1.250em 0.000em 0.000em; */
-	/* } */
-	/* .dv-generic-carousel .sd-right { */
-		/* top:10em;	 */
-	/* } */
-	/* .dv-generic-carousel .sd-left {  */
-		/* top:52%; */
-	/* } */
-	/* button.btn-in-chat{	 */
-		/* font-size:1.00em;	 */
-	/* } */
-	/* .wgChatbox-footer .span2 textarea{ */
-		/* width: 96%; */
-		/* font-size:1.6em; */
-	/* } */
-	/* .imgsend{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgemoji{ */
-		/* width: 2em; */
-		/* height: 2em; */
-	/* } */
-	/* .imgfile{ */
-		/* padding-top:0.50em;  */
-		/* width: 1.4em; */
-		/* height: 1.4em; */
-	/* } */
-	/* .emoji-chat{ */
-		/* position: fixed; */
-		/* font-size:1.4em;	 */
-		/* bottom: 2em; */
-	/* } */
-	/* .imgbtn-uin{ */
-		/* width:2em; */
-	/* } */
-	/* .span4{ */
-		/* width:7%; */
-	/* } */
-/* } */
-/* @media screen and (max-width:990px){ */
-	/* .wgChatbox{ */
-		/* width: 100%; */
-		/* height: 100%; */
-		/* right: 0%; */
-	/* } */
-	/* .wgChatbox-head{ */
-		/* height: 8%; */
-	/* } */
-	/* .wgChatbox-footer{ */
-		/* height: 8%; */
-	/* } */
-	/* .wgChatbox-body{ */
-		/* height: 84%; */
-	/* } */
-	/* .wgChatbox-head .span1 .span1-1{ */
-		/* width:50%; */
-		/* height:70%;	 */
-	/* } */
-	/* .wgChatbox-head .span2 .span2-1{ */
-		/* font-size:600%; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message-data { */
-		/* font-size: 3.5em; */
-	/* } */
-	/* .wgChatbox-body .chat-history .message  { */
-		/* font-size:4.5em; */
-		/* line-height: 1em;	 */
-	/* } */
-	/* .wgChatbox-body .chat-history ul { */
-		/* padding-right: 3.250em ; */
-	/* } */
-	/* .dv-generic-carousel .sd-right { */
-		/* top:7em;	 */
-	/* } */
-	/* .dv-generic-carousel .sd-left {  */
-		/* top:7em; */
-	/* } */
-	/* button.btn-in-chat{	 */
-		/* font-size:3.00em;	 */
-	/* } */
-	/* .wgChatbox-footer .span2 textarea{ */
-		/* width: 92%; */
-		/* font-size:4.5em; */
-	/* } */
-	/* .imgsend{ */
-		/* width: 5em; */
-		/* height: 5em; */
-	/* } */
-	/* .imgemoji{ */
-		/* width: 5em; */
-		/* height: 5em; */
-	/* } */
-	/* .imgfile{ */
-		/* padding-top:0.50em;  */
-		/* width: 3.5em; */
-		/* height: 3.5em; */
-	/* } */
-	/* .emoji-chat{ */
-		/* position:absolute ; */
-		/* font-size:3.4em;	 */
-		/* bottom: 2em; */
-	/* } */
-	/* .imgbtn-uin{ */
-		/* width:2em; */
-	/* } */
-	/* .span4{ */
-		/* width:9%; */
-	/* } */
-/* } */
 
 .background{
 	background-color:#C5DDEB;
@@ -554,7 +277,7 @@
 }
 
 .comfirm-end-box .comfirm-end-inside p{
-	font-size: 1.550em!important;
+	font-size: 1.0em!important;
 }
 
 .wgChatbox-head{
@@ -633,7 +356,7 @@
     padding-top: 0.625em;
 }
 .wgChatbox-body .chat-history .message-data {
-    margin-bottom: 0.625em;
+    margin-bottom: 1em;
 	padding-left:1em;
 }
 
@@ -695,6 +418,7 @@
 }
 .other-message a{
    color:dodgerblue;    
+   cursor: pointer;
 }
 .my-message a {
    color:orange;    
@@ -745,7 +469,7 @@
 	/* height: 10%; */
 }
 .wgChatbox-footer .span1{
-	width:9%;
+	width:15%;
 	vertical-align:middle;
 	display: table-cell;
 	
@@ -759,13 +483,14 @@
 }
 .wgChatbox-footer .span2 textarea{
 	border: 0.063em solid #b9c1c9;
-	/* border-radius: 0.500em; */
+	/* border-radius: 1.000em; */
 	/* padding: 0.313em 0.625em ; */
 	background-color: #e9e9eb;
 	resize: none;
 	outline:none;
 	overflow:auto;
 	font-family:'TrueMedium';
+	padding-left:0.4em;
 }
 .wgChatbox-footer .span2 textarea::placeholder {
 	color:#b9c1c9;
@@ -908,6 +633,7 @@ button.btn-in-chat:hover{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+	line-height: 1em;
 }
 
 .dv-generic-carousel .ul-gc li .dv-button:hover {
@@ -946,7 +672,7 @@ button.btn-none-style{
 .emoji-chat{
     z-index: 99;
     background: #e8e8e8;
-    
+    width: 80%;
 	line-height:1.3em;
 	/* top: 10.9em; */
 	/* left: 39.5em; */
@@ -1026,6 +752,7 @@ button.btn-none-style{
 	cursor:pointer;
 	font-size:0.65em;
 	/* margin-left:1.50em; */
+	outline: none;
 }
 .btn-sms{
 	border: 0.1em solid #ed1c24;
@@ -1066,7 +793,7 @@ button.btn-sms:hover{
 	border: solid 0.075em #999;
     background: #fff;
     float: left;
-	color: #ffffff;
+	/* color: #ffffff; */
     padding: 0.525em 0.850em;
     border-radius: 0.500em;
     margin-bottom: 0.500em;
@@ -1079,8 +806,9 @@ button.btn-sms:hover{
     position: relative;
     left: 1.00em;
     margin-right: 1.00em;
-    font-size: 1.5em;
+    font-size: 1.2em;
 	color:black;
+	line-height: 1.5em;
 }
 .selec {
     float: right;
@@ -1116,6 +844,7 @@ button.btn-sms:hover{
 }
 .bul-slide-img{
  text-align:center;
+ margin-top:0.5em;
 }
 .messagehistory{
 	border: solid 0.075em #999;

@@ -27,17 +27,48 @@ var ChatFactory = function(config) {
 			this._chatapi.uploadfileChat(fileup);
 		},
 		startTypingChat: function(){
-				this._chatapi.startTypingChat();
+			this._chatapi.startTypingChat();
 		},
 		stopTypingChat: function(){
-				this._chatapi.stopTypingChat();
+			this._chatapi.stopTypingChat();
 		},
 		pushUrlChat: function(url) {
 			this._chatapi.pushUrlChat(url);
 		},
 		updateUserDataChat: function(url) {
 			this._chatapi.updateUserDataChat(url);
+		},
+		notiinapp: function(url) {
+			this._chatapi.notiinapp(url);
+		},
+		_stopChatRefresh: function(){
+			this._chatapi._stopChatRefresh();
+		},
+		_stopVerifytoken: function(){
+			this._chatapi._stopVerifytoken();
+		},
+		chathisrotyview: function(message) {
+			this._chatapi.chathisrotyview(message);
+		},
+		gettokenhistory: function() {
+			this._chatapi.gettokenhistory();
+		},
+		gettokendownload: function() {
+			this._chatapi.gettokendownload();
+		},
+		verifytokendownload: function() {
+			this._chatapi.verifytokendownload();
+		},
+		checkmimetypecustomer: function(file,fileup) {
+			this._chatapi.checkmimetypecustomer(file,fileup);
+		},
+		checkmimetypeagent: function(file,fromtype,fromnickname,userData) {
+			this._chatapi.checkmimetypeagent(file,fromtype,fromnickname,userData);
+		},
+		termitokendownload: function() {
+			this._chatapi.termitokendownload();
 		}
+
 	}
 	
 	// Return the wrapper class to the caller
@@ -97,6 +128,7 @@ Chat.createAPIv2 = function(config) {
     	_alias: null,
     	_transcriptPosition: 1,
     	_chatRefreshIntervalId: null,
+		_tokenIntervalId: null,
 		_downloadAttempts: null,
 		_uploadMaxFiles: null,
 		_uploadMaxFileSize: null,
@@ -123,17 +155,18 @@ Chat.createAPIv2 = function(config) {
 			var me = this;
 			if(formchat.search("ChatCookie") >= 0)
 			{
-				//me._config.baseURL = 10;
-				me._startChatRefresh();
-				me._refreshChat();
-				me._config.onStarted();
-				me._getlimitfileChat();
+					me._startChatRefresh();
+					me.verifytokendownload();
+					me._startVerifytoken();
+					me._refreshChat();
+					me._config.onStarted();
+					me._getlimitfileChat();
+					var elmnt = document.getElementById("chat-history");
 			}
 			else
 			{
 				var url = me._config.baseURL + '/chat/' + me._config.chatServiceName;
 				const request = new XMLHttpRequest();
-				//request.responseType = "json";
 				request.open("POST", url,true);
 				request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				request.onerror = function() {
@@ -175,6 +208,8 @@ Chat.createAPIv2 = function(config) {
 						// Start the interval polling for transcript updates
 						me._startChatRefresh();
 						me._refreshChat();
+						me.gettokenhistory();
+						me.gettokendownload();
 						
 					}					
 				}
@@ -218,7 +253,8 @@ Chat.createAPIv2 = function(config) {
 						}
 						var oo = JSON.parse(request.responseText);						
 						// Stop the interval polling for transcript updates
-						me._stopChatRefresh();						
+						me._stopChatRefresh();	
+						me._stopVerifytoken();
 						// Clear out the session values
 						me._chatId = oo.chatId;
 						me._userId = oo.userId;
@@ -227,6 +263,7 @@ Chat.createAPIv2 = function(config) {
 						me._transcriptPosition = 1;						
 						// Let the listeners know that the chat has ended
 						me._config.onEnded();
+						me.termitokendownload();
 					}
 				}
 			}
@@ -239,99 +276,6 @@ Chat.createAPIv2 = function(config) {
         	var me = this;
 			message = encodeURIComponent(message);
         	// Populate the parameters and URL
-			// if(message.search("&") != -1)
-			// {
-				// var spatext = message.search("&");				
-				// if(spatext > 0)
-				// {
-					// var text2 = message.substring(0,spatext);
-					// if(message.search("&") < message.length)
-					// {	
-						
-						// var text3 = message.substring(spatext+1,message.length);
-						// message = text2+"%26"+text3;
-					// }
-					// else
-					// {
-						// message = text2+"%26";
-					// }
-				// }	
-				// else
-				// {
-					// if(message.search("&") < message.length)
-					// {	
-						
-						// var text4 = message.substring(spatext+1,message.length);
-						// message = "%26"+text4;
-					// }
-					// else
-					// {
-						// message = "%26";
-					// }
-				// }
-			// }
-			// else if(message.search("[+]") != -1)
-			// {
-				// var spatext = message.search("[+]");
-				// if(spatext > 0)
-				// {
-					// var text2 = message.substring(0,spatext);
-					// if(message.search("[+]") < message.length)
-					// {	
-						
-						// var text3 = message.substring(spatext+1,message.length);
-						// message = text2+"%2B"+text3;
-					// }
-					// else
-					// {
-						// message = text2+"%2B";
-					// }
-				// }	
-				// else
-				// {
-					// if(message.search("[+]") < message.length)
-					// {	
-						
-						// var text4 = message.substring(spatext+1,message.length);
-						// message = "%2B"+text4;
-					// }
-					// else
-					// {
-						// message = "%2B";
-					// }
-				// }
-			// }
-			// else if(message.search("%") != -1)
-			// {
-				// var spatext = message.search("%");
-				// if(spatext > 0)
-				// {
-					// var text2 = message.substring(0,spatext);
-					// if(message.search("%") < message.length)
-					// {	
-						
-						// var text3 = message.substring(spatext+1,message.length);
-						// message = text2+"%25"+text3;
-					// }
-					// else
-					// {
-						// message = text2+"%25";
-					// }
-				// }	
-				// else
-				// {
-					// if(message.search("%") < message.length)
-					// {	
-						
-						// var text4 = message.substring(spatext+1,message.length);
-						// message = "%25"+text4;
-					// }
-					// else
-					// {
-						// message = "%25";
-					// }
-				// }
-			// }
 			var params = 'message=' + message + '&userId=' + me._userId + '&secureKey=' + me._secureKey + '&alias=' + me._alias;
 			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/send';
 			const request = new XMLHttpRequest();
@@ -375,17 +319,27 @@ Chat.createAPIv2 = function(config) {
 			}, 5000);
 		},
 		
+		
+		_startVerifytoken: function() {			
+			var me = this;
+			me._tokenIntervalId = setInterval( function() {
+				me.verifytokendownload();
+			}, 210000);
+		},
+		
 		// Stop the interval object from making 'refresh' requests		
 		_stopChatRefresh: function() {
-			
 			var me = this;
-			
 			clearInterval(me._chatRefreshIntervalId);
+		},
+		
+		_stopVerifytoken: function() {
+			var me = this;
+			clearInterval(me._tokenIntervalId);
 		},
 		
 		// Refresh the Chat transcript by making a 'refresh' request
 		_refreshChat: function() {
-			
 			var me = this;
 			if(chat == "ChatCookie")					
 			{		
@@ -393,13 +347,11 @@ Chat.createAPIv2 = function(config) {
 				me._secureKey = SecureKey;		
 				me._alias = Alias;		
 				me._transcriptPosition = TranscriptPosition;		
-				me._chatId = ChatId;	
-				chat = "";		
+				me._chatId = ChatId;	 
 			}
 			var params = 'userId=' + me._userId + '&secureKey=' + me._secureKey + '&alias=' + me._alias + '&transcriptPosition=' + me._transcriptPosition;
 			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/refresh';
 			const request = new XMLHttpRequest();
-			//request.responseType = "json";
 			request.open("POST", url);
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			request.onerror = function() {
@@ -419,9 +371,21 @@ Chat.createAPIv2 = function(config) {
 					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
 				}			
 			}
+			
 			request.onreadystatechange = function() {
+				if(request.status != 200)
+				{
+					internet = false;
+					if(wgLanguage == "TH")
+					{
+					onMessageAlert(dataMessageTH["Error-0"]);
+					}
+					else if(wgLanguage == "EN")
+					{
+					onMessageAlert(dataMessageEN["Error-0"]);
+					}
+				}
 				if(request.readyState == 4 && request.status == 200){ 
-				
 					if(internet == false)
 					{
 						$(".comfirm-end-background").addClass("hide");
@@ -429,105 +393,101 @@ Chat.createAPIv2 = function(config) {
 						internet = true;
 					}
 					if ( me._config.debug === true ) {
-						// alert("_refreshChat response -> "+JSON.stringify(request.responseText));
-						// console.log("_refreshChat response -> "+JSON.stringify(request.responseText));
 					}
 					// Update the transcript position
-					
 					var oo = JSON.parse(request.responseText);
-					console.log(oo);
-					
 					if((oo.chatEnded == true && !oo.errors && internet == false )||(oo.chatEnded == true && !oo.errors && internet != false )||(oo.chatEnded == true && oo.errors && internet == false ) ||oo.chatEnded == true )
 					{
-						// console.log("เข้าอันแรก");
+						me.termitokendownload();
 						me._stopChatRefresh();
+						me._stopVerifytoken();
 						setCookie("username", user, 0.00001);
-						$.each(oo.messages, function(index, message) {	
-						// console.log(message.type);
-							if(message.type === "Message"){
-								// console.log("เข้านะ");
-								me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text);
-							}
-						});
+						oChatStart = false;
 						removeTyping();
 						$('#btn-Send').prop('disabled', true);
 						$('#uploadfile').prop('disabled', true);
-						// $('#btn-emoji').prop('disabled', true);
-						document.getElementById("btn-emoji").disabled = true;
 						$('#messagechat').prop('disabled', true);
-						createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-						createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]); 
-						
+						if(document.getElementById("btn-emoji").disabled == false)
+						{
+							if(!end)
+							{
+								createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+								createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+								setTimeout(function(){
+								createBtnReChat(wgBtnChat);
+								$('.btn-in-chat-download').prop('disabled', true);
+								rehistory=0;
+								$('#btn-startchat').text(wgSystem[wgLanguage]["messageresponse"]["btniserviceendchat"]);
+								}, timerestartchat);  
+							}else
+							{
+								$('.btn-in-chat-download').prop('disabled', true);
+								createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+								createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
+							}								
+						}
+						document.getElementById("btn-emoji").disabled = true;
+						chat = "";	
 					}
-					else if(!oo.chatEnded && !oo.errors && internet)
+					else if(!oo.chatEnded && !oo.errors && internet && chat == "ChatCookie")
 					{
-						// console.log("เข้าอันสอง");
 						user = "ChatCookie";		
-						setCookie("username", user, 0.00105);
+						setCookie("username", user, 0.35000);
 						internet = true;
 						me._transcriptPosition = oo.nextPosition;
 						// For each item in the transcript...
 						$.each(oo.messages, function(index, message) {	
 							if(message.type === "FileUploaded"){
-								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData);
+								// me.checkmimetypeagent(message.userData["file-id"],message.from.type, message.from.nickname,message.userData);
+								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData);		
+							} else{
+									me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded);
+							}
+						}); 
+						if(rehistory > 0)
+						{
+							$("#chat-history").scrollTop(0);
+						}
+						chat = "";		
+					}
+					else if(!oo.chatEnded && !oo.errors && internet)
+					{
+						user = "ChatCookie";		
+						setCookie("username", user, 0.35000);
+						internet = true;
+						me._transcriptPosition = oo.nextPosition;
+						// For each item in the transcript...
+						$.each(oo.messages, function(index, message) {	
+							if(message.type === "FileUploaded"){
+								// me.checkmimetypeagent(message.userData["file-id"],message.from.type, message.from.nickname,message.userData);
+								me._config.onFileReceived(message.from.type, message.from.nickname,message.userData); 								
 							} else{
 								me._config.onMessageReceived(message.from.type,message.type, message.from.nickname, message.text, oo.chatEnded);
 							}
-						});
-					}
-					
-					// If the chat has ended, perhaps by the agent ending the chat, then
-					// stop the interval object from polling for transcript updates
-					if ( oo.chatEnded == true ) {
-						
-						me._stopChatRefresh();
-						setCookie("username", user, 0.00001);
-						// setCookie("username", user, 0.00001);
-						// createMessage(wgMsgAgent,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]);
-						// createMessage(wgMsgCustomer,wgSystem[wgLanguage]["messageresponse"]["Leftchat"]); 
-						// removeTyping();
-						// $('#btn-Send').prop('disabled', true);
-						// $('#uploadfile').prop('disabled', true);
-						// // $('#btn-emoji').prop('disabled', true);
-						// document.getElementById("btn-emoji").disabled = true;
-						// $('#messagechat').prop('disabled', true);
-						me._config.onEnded();
-					}
-					
+						}); 
+						scrolltext = true;
+					}					
 				}
 			}
 			request.send(params);
 			
-		},
+		},	
 		
 		downloadfileChat: function(fileId,fileName){
-			var me = this;
-			
-			me._usedDownloadAttempts = parseInt(me._usedDownloadAttempts);
-			me._downloadAttempts = parseInt(me._downloadAttempts);
-			if(me._usedDownloadAttempts >= me._downloadAttempts){				
-				
-				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Download-Attemps"]);
-				return;
-			}
-			
-			var params = 'userId=' + me._userId + '&secureKey=' + me._secureKey + '&alias=' + me._alias;
-			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/file/'+fileId+'/download';
-			
+			var me = this;			
+			var data = JSON.stringify({
+				  "TokenID":tokendownload ,
+				  "FileID": fileId
+				});
+			var url = urldownloadfileChat;
 			const request = new XMLHttpRequest();
-			//if(!isIE)
-			//{
 				request.onloadstart = function(ev) {
-					request.responseType = "blob";
 				}
-				//request.responseType = "blob";
-			//}
 			request.open("POST", url);
-			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			request.setRequestHeader("Content-Type","application/json");
 			request.onerror = function() {
 				if(request.status == 0)
 				{	
-					
 					if(wgLanguage == "TH")
 					{
 					onMessageAlert(dataMessageTH["Error-408"]);
@@ -542,56 +502,23 @@ Chat.createAPIv2 = function(config) {
 					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
 				}				
 			}
-			request.onreadystatechange = function() {
-				
-				if(request.readyState == 4 && request.status == 200){ 
-				// console.log(request.response);
-				// console.log(window.URL.createObjectURL(request.response));
+			request.onreadystatechange = function() {				
+				if(request.readyState == 4 && request.status == 201){ 			  
+					 var oo = JSON.parse(request.response);
 						if ( me._config.debug === true ) {
 						}
 						me._getlimitfileChat();
 						if(isIE)
 						{
-							me._config.onDownloadFileIE(request.response,fileName);
-							
+							me._config.onDownloadFileIE(oo.FileDownload,fileName);							
 						}
 						else
 						{
-							// if (window.navigator.msSaveOrOpenBlob) {
-								// url1 = window.navigator.msSaveOrOpenBlob(request.response);
-								 // alert("เข้าblob");
-							// }
-							// else if (window.navigator.userAgent.match(/Chrome/i) && window.navigator.userAgent.match(/Mobile/i)) {
-								 // alert("เข้ามือถือ");
-								 // // url1 = (window.URL || window.webkitURL || window || {}).createObjectURL(request.response);
-								 // // alert(request.response);
-								 // // console.log(request.response);
-								 // // alert(window.URL.createObjectURL());
-								 // // alert("url1 : "+url1);fileId
-								  //window.open(fileId);
-							// }
-							// else if (window.no[avigator.userAgent.match('CriOS')) {
-								// alert("เข้ามือถือOS");
-							// }
-							// else if (window.navigator.userAgent.match(/iPad/i) || window.navigator.userAgent.match(/iPhone/i)) {
-								// alert("เข้าiPad");
-							// }
-							// else {
-								// var url = window.URL || window.webkitURL;
-								// //url1 = window.open(url.createObjectURL(request.response));
-							// }
-								// url1 = (window.URL || window.webkitURL || window || {} || URL).createObjectURL(request.response);
-								// alert(fileId);
-								// alert(fileName);
-								
-							me._config.onDownloadFile(request.response,fileName,me._userId,me._secureKey,me._alias,me._config.baseURL,me._config.chatServiceName,me._chatId,fileId);		
-							// me._config.onDownloadFile(request.response,fileName);
-								// console.log(request.response);
-								
+							me._config.onDownloadFile(oo.FileDownload,fileName,me._userId,me._secureKey,me._alias,me._config.baseURL,me._config.chatServiceName,me._chatId,fileId);										
 						}
 					}
 			}
-			request.send(params);
+			request.send(data);
 		},
 		
 		_getlimitfileChat: function() {
@@ -599,7 +526,6 @@ Chat.createAPIv2 = function(config) {
 			var params = 'userId=' + me._userId + '&secureKey=' + me._secureKey + '&alias=' + me._alias;
 			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/file/limits';
 			const request = new XMLHttpRequest();
-			// request.responseType = "json";
 			request.open("POST", url);
 			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			request.onerror = function() {
@@ -622,7 +548,6 @@ Chat.createAPIv2 = function(config) {
 			request.onreadystatechange = function() {
 				if(request.readyState == 4 ){ 
 					if(request.status == 200){
-					
 						if ( me._config.debug === true ) {
 						}
 						var oo = JSON.parse(request.responseText);
@@ -649,30 +574,30 @@ Chat.createAPIv2 = function(config) {
 			me._uploadMaxFiles = parseInt(me._uploadMaxFiles);
 			me._usedUploadMaxTotalSize = parseInt(me._usedUploadMaxTotalSize);
 			me._uploadMaxTotalSize = parseInt(me._uploadMaxTotalSize);
-			
 			if(fileup[0].size > me._uploadMaxFileSize){
 				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-File-Size"]);
+				$("#uploadfile").val(null);
 				return;
-			}
-			
-			var sptname =  fileup[0].name.split(".");
-			
+			}			
+			var sptname =  fileup[0].name.split(".");			
 			if(me._uploadFileTypes.search(sptname[sptname.length-1].toLowerCase()) == -1){
 				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-File-Types"]);
+				$("#uploadfile").val(null);
 				return;
 			}	
 			
 			if(me._usedUploadMaxFiles >= me._uploadMaxFiles){
 				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Upload-Max-Files"]);
+				$("#uploadfile").val(null);
 				return;
 			}
 			
 			if(me._usedUploadMaxTotalSize >= me._uploadMaxTotalSize){
 				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-Total-Size"]);
+				$("#uploadfile").val(null);
 				return;
 			}
 			
-			//var params = 'userId=' + me._userId + '&secureKey=' + me._secureKey + '&alias=' + me._alias + '&file=' + fileup[0];
 			var url = me._config.baseURL + '/chat/' + me._config.chatServiceName + '/' + me._chatId + '/file';		
 			var formData = new FormData();
 			formData.append('userId', me._userId);
@@ -680,10 +605,8 @@ Chat.createAPIv2 = function(config) {
 			formData.append('alias',me._alias);
 			formData.append('file',fileup[0]);
 			const request = new XMLHttpRequest();
-			// request.responseType = "json";
 			request.open("POST", url,true);
 			request.setRequestHeader("Accept","*/*");
-			// request.setRequestHeader("Content-Type",!1);
 			request.overrideMimeType("multipart/form-data;");
 			request.onerror = function() {
 				if(request.status == 0)
@@ -923,7 +846,340 @@ Chat.createAPIv2 = function(config) {
 				}
 			}
 			request.send(params);
+        },
+		
+		notiinapp: function(tokenapp) {
+        
+        	var me = this;
+        	// Populate the parameters and URL
+			var params = JSON.stringify({	"tokens":[tokenapp], 
+							"message": {"notification":	{ 	"title": titlenoti,
+															"body": bodynoti, 
+															"custom_notification": {"show_in_foreground": false}
+														},
+										"data": {"screen": "ExpertChat"}
+									   }
+						 });
+			var url = "https://dmpapi2.trueid.net/iservice-notifications/api/send";
+			const request = new XMLHttpRequest();
+			request.open("POST", url);
+			request.setRequestHeader("Content-Type","application/json");
+			request.setRequestHeader("Cache-Control","no-cache");
+			request.setRequestHeader("Authorization","Bearer 5aaf9ade15afe0324400bacc83067c9af5664822aaa0a739d528528b");
+			request.onerror = function() {
+				if(request.status == 0)
+				{	
+					if(wgLanguage == "TH")
+					{
+					onMessageAlert(dataMessageTH["Error-408"]);
+					}
+					else if(wgLanguage == "EN")
+					{
+					onMessageAlert(dataMessageEN["Error-408"]);
+					}
+				}
+				else
+				{
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+				}							
+			}
+			request.onreadystatechange = function() {
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+						if ( me._config.debug === true ) {
+						}
+						var oo = JSON.parse(request.responseText);
+					}
+				}
+			}
+			request.send(params);
+        },
+		
+   chathisrotyview: function(message) {
+
+			var me = this;
+			var url = urlchathisrotyview+'/?History='+rehistory;
+			const request = new XMLHttpRequest();
+			request.open("GET", url);
+			request.setRequestHeader("Authorization","Bearer "+tokenhistory);
+			request.setRequestHeader("Content-Type","application/json");
+			request.onerror = function() {
+				if(request.status != 200)
+				{		
+	
+					if(wgLanguage == "TH")
+					{
+						onMessageAlert(dataMessageTH["Error-408"]);					
+					}
+					else if(wgLanguage == "EN")
+					{
+						onMessageAlert(dataMessageEN["Error-408"]);					
+					}
+				}
+				else
+				{
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+				}			
+			}
+			request.onreadystatechange = function() {
+				if(request.status != 200 && request.status != 401){
+						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+					}
+				if(request.status == 401)
+				{	
+					me.gettokenhistory();
+					if(expirytoken == false)
+					{
+						expirytoken = true;
+						rehistory = parseInt(rehistory)-1;
+					}				
+				}
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+						if ( me._config.debug === true ) {
+						}
+						me._stopChatRefresh();
+						me._stopVerifytoken();
+						var list = document.getElementById("ul-history").childNodes;	
+						var numui = document.getElementById("ul-history").childNodes.length;
+							for(var i=0;i<numui;i++)
+							{
+								document.getElementById(list[0].id).parentNode.removeChild(document.getElementById(list[0].id));
+							}
+						var oo = JSON.parse(request.responseText)
+							chathistoryview(oo);
+					}
+				}
+			}
+			request.send();
+			
+        },
+		
+		gettokenhistory: function() {
+        
+			var me = this;
+			var IxnID = window.btoa(ChatId);
+			var params = JSON.stringify({"lxnID":IxnID});
+			var url = urlgettokenhistory;
+			const request = new XMLHttpRequest();
+			request.open("POST", url);
+			request.setRequestHeader("Content-Type","application/json");
+			request.setRequestHeader("username",Hisuser);
+			request.setRequestHeader("password",window.btoa(Hispass));
+			request.onerror = function() {
+				if(request.status != 200)
+				{		
+	
+					if(wgLanguage == "TH")
+					{
+						onMessageAlert(dataMessageTH["Error-408"]);					
+					}
+					else if(wgLanguage == "EN")
+					{
+						onMessageAlert(dataMessageEN["Error-408"]);					
+					}
+				}
+				else
+				{
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+				}			
+			}
+			request.onreadystatechange = function() {
+				if(request.status != 200){
+						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+					}
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+						if ( me._config.debug === true ) {
+						}
+						
+						var oo = JSON.parse(request.responseText);
+						tokenhistory = oo.token;
+						if(expirytoken == true)
+						{
+							stephistory();
+							expirytoken = false;
+						}
+					}
+				}
+			}
+			request.send(params);
+	
+        },
+		
+		verifytokendownload: function() {
+
+			var me = this;
+			var url = urlverifytokendownload+tokendownload;
+			const request = new XMLHttpRequest();
+			request.open("GET", url);
+			request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			request.onerror = function() {
+					me._stopVerifytoken();
+					me.gettokendownload();			
+			}
+			request.onreadystatechange = function() {
+				if(request.readyState == 4 ){ 
+					if(request.status == 201){
+						if ( me._config.debug === true ) {
+						}
+						
+						var oo = JSON.parse(request.responseText);
+					}else
+					{
+						me._stopVerifytoken();	
+						me.gettokendownload();
+					}
+				}
+			}
+			request.send();
+	
+        },
+		
+		termitokendownload: function() {
+			var me = this;
+			var url = urltermitokendownload+tokendownload;
+			const request = new XMLHttpRequest();	
+			request.open("GET",url);
+			request.onreadystatechange = function() {
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+										
+						var oo = JSON.parse(request.responseText);
+					}
+				}
+			}
+			request.send();			
+        },
+			
+		gettokendownload: function() {
+
+			var me = this;
+			var data = JSON.stringify({
+			  "UserID": me._userId,
+			  "SecureKey": me._secureKey,
+			  "Alias": me._alias,
+			  "ChatID": me._chatId
+			});
+			var url = urlgettokendownload;
+			const request = new XMLHttpRequest();
+			request.open("POST", url);
+			request.setRequestHeader("Content-Type","application/json");
+			request.onerror = function() {
+				if(request.status != 201)
+				{		
+	
+					if(wgLanguage == "TH")
+					{
+						onMessageAlert(dataMessageTH["Error-408"]);					
+					}
+					else if(wgLanguage == "EN")
+					{
+						onMessageAlert(dataMessageEN["Error-408"]);					
+					}
+				}
+				else
+				{
+					me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+				}			
+			}
+			request.onreadystatechange = function() {
+				if(request.status != 201){
+						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+					}
+				if(request.readyState == 4 ){ 
+					if(request.status == 201){
+						if ( me._config.debug === true ) {
+						}					
+						var oo = JSON.parse(request.responseText);
+						 tokendownload = oo.token;
+						 me._startVerifytoken();
+					}
+				}
+			}
+			request.send(data);
+			
+			
+        },
+		
+		
+		checkmimetypeagent: function(file,fromtype,fromnickname,userData) {
+
+			var me = this;
+			var data = JSON.stringify({
+			  "TokenID": tokendownload,
+			  "FileID": file
+			});
+			var url = urlcheckmimetypeagent;
+			const request = new XMLHttpRequest();
+			request.open("POST", url);
+			request.setRequestHeader("Content-Type","application/json");
+			request.onreadystatechange = function() {
+				if(request.status != 200){
+						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+					}
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+						if ( me._config.debug === true ) {
+						}
+						
+						var oo = JSON.parse(request.responseText);
+						checkfiletype = oo.validate_result;
+						// me._config.onFileReceived(fromtype, fromnickname,userData,checkfiletype);
+						$("[value="+file+"]").prop('disabled', false);
+						if(checkfiletype == false)
+						{
+							$("[value="+file+"]").attr("onclick","onMessageAlert(wgSystem[wgLanguage]['messageresponse']['Error-401'])");
+						}
+						
+					}
+				}
+			}
+			request.send(data);
+			
+			
+        },
+		
+		checkmimetypecustomer: function(file,fileup) {
+			var me = this;
+			var data = new FormData();
+			data.append("file", file);
+			data.append("token", tokendownload);
+			var url = urlcheckmimetypecustomer;
+			const request = new XMLHttpRequest();
+			request.open("POST", url);
+			var spt = file.name.split(".");
+			request.onreadystatechange = function() {
+				if(request.status != 200){
+						me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-401"]);
+				}
+				if(request.readyState == 4 ){ 
+					if(request.status == 200){
+						if ( me._config.debug === true ) {
+						}				
+						var oo = JSON.parse(request.responseText);
+						  if(oo.validate_result)
+						  {
+							  me.uploadfileChat(fileup);
+						  }else
+						  {
+							  me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-File-Types"]);
+						  }
+					}
+				}
+			}
+
+			if(file.size < me._uploadMaxFileSize)
+			{
+				request.send(data);
+			}
+			else
+			{
+				me._config.onMessageAlert(wgSystem[wgLanguage]["messageresponse"]["Error-Max-File-Size"]);
+			}
+			
         }
+   
 		
     });
 };
