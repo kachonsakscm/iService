@@ -8,31 +8,17 @@
     <title>ทรู คอร์ปอเรชั่น | True Corporation</title>
 
 
-    <script src="https://survey.truecorp.co.th/web/jquery-1.11.1.min.js"></script> 
-	<!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/font-awesome.min.css" /> -->
-	<!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/reset-min.css" /> -->
-    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/owl.carousel.css" /> -->
-    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/animate.css" /> -->
-    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/jquery.scrollbar.css" /> -->
-    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/main.css" /> -->
-    <!-- <link rel="stylesheet" href="https://survey.truecorp.co.th/web/toggle-colors.css" /> -->
-	
+    <script src="https://galb-dev.truecorp.co.th/iservice/jquery-1.11.1.min.js"></script> 	
 	<link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/reset-min.css">
     <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/owl.carousel.css">
     <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/animate.css">
     <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/jquery.scrollbar.css">
     <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/main.css">
     <link rel="stylesheet" href="https://www3.truecorp.co.th/new/public/assets/truecorp/css/toggle-colors.css">
-    
 	
-
-    <!-- <script src="https://survey.truecorp.co.th/web/responsive/jquery-1.11.1.min.js"></script> -->
-	<!-- <script src="https://survey.truecorp.co.th/web/responsive/configResponsive.js"></script> -->
-    <!-- <script src="https://survey.truecorp.co.th/web/responsive/widgetonloaduiResponsive.js"></script> -->
-	
-	<script src="/iservice/configResponsive.js"></script>
-    <script src="/iservice/widgetonloaduiResponsive.js"></script>
-
+	<script src="configResponsive.js"></script>
+    <script src="widgetonloaduiResponsive.js"></script>
+	<script src="https://galb-dev.truecorp.co.th/iservice/download.js"></script>
 </head>
 <script> 
 (function(d, s, id, o) { 
@@ -43,29 +29,23 @@ e.src = o.src;
 e.setAttribute('data-gcb-url', o.cbUrl); 
 fs.parentNode.insertBefore(e, fs); 
 })(document, 'script', 'genesys-js', { 
-src: "gcb.min.js", cbUrl: "http://172.20.111.79:8079/cobrowse" 
+src: "https://galb.truecorp.co.th/iservice/gcb.min.js", cbUrl: "https://galb.truecorp.co.th/cobrowse"
 }); 
 
 var _genesys =  { 
-      cobrowse :  { 
-		  css: {
-					server: true
-				},
-            debug :  true 	,
-			cometdConfig: {logLevel: "debug"}			
-      } 
+		  disableWebSockets: true ,
+		  cobrowse :  { 
+			  css: {
+						server: true,
+						browser : true
+					},
+				debug :  true 	,
+				cometdConfig: {logLevel: "debug"}			
+		  } 
 } ; 
+
 </script>
-	<!-- http://172.25.188.79:8079/cobrowse -->
-	<!-- cbUrl:"http://GES01-TYN-DEV/cobrowse" -->	
-	<!-- cbUrl: "https://galb-dev.truecorp.co.th/cobrowse/"  -->
-	<!-- "http://172.30.181.16:8079/cobrowse" -->
 <body class="background">
-
-                             
-
-
-
 
 		<form id="formchat" style="display:none;" >
 		<input type="hidden" name="firstName"/>
@@ -79,7 +59,7 @@ var _genesys =  {
 		<div class="wgbackground">
 		<div id="wgChatbox" class="wgChatbox hide">
 			<div class="comfirm-end-background hide" id="comfirm-end-background">
-			<img id="imgloader" class="imgloader" src="https://galb-dev.truecorp.co.th/iservice/img/loader.gif">
+			<img id="imgloader" class="imgloader" src="https://galb.truecorp.co.th/iservice/img/loader.gif">
 			</div>
 			<div class="comfirm-end-box hide">
 				<div class="comfirm-end-inside">
@@ -91,11 +71,6 @@ var _genesys =  {
 					</center>
 				</div>
 			</div>
-			<!-- <div class="wgChatbox-head"> -->
-				<!-- <span class="span1"><span class="span1-1"><img src="https://survey.truecorp.co.th/web/responsive/img/mari.png"></span></span> -->
-				<!-- <span class="span2"><span class="span2-1">Live Chat</span></span> -->
-				
-			<!-- </div> -->
 			<div class="wgChatbox-body">
 				<div id="chat-history" class="chat-history" >
 					<ul id="ul-history" class="ul-history"></ul>
@@ -108,16 +83,16 @@ var _genesys =  {
 			<div class="wgChatbox-footer">
 				<span class="span1">
 					<button type='button' id="btn-emoji" class="btn-none-style" onclick='clickemoji();'>
-						<img src="https://galb-dev.truecorp.co.th/iservice/img/emoji.png" class="imgemoji" width="25" height="25"/>
+						<img src="https://galb.truecorp.co.th/iservice/img/emoji.png" class="imgemoji" width="25" height="25"/>
 					</button></span>
 					<span class="span4">
 					<input type='file' id='uploadfile' onchange='attach(this.files);' style='display:none;'/>
-					<img src="https://galb-dev.truecorp.co.th/iservice/img/attach.png" id="uploadfile" class="imgfile" onclick="$('#uploadfile').click();" style="cursor:pointer;" width="20" height="20"  />
+					<img src="https://galb.truecorp.co.th/iservice/img/attach.png" id="uploadfile" class="imgfile" onclick="$('#uploadfile').click();" style="cursor:pointer;" width="20" height="20"  />
 					</span>
 				<span class="span2"><textarea placeholder="Type your massage" id="messagechat" name="messagechat" rows="1"></textarea></span>
 				<span class="span3">
 					<button type='button' id="btn-Send" class="btn-none-style" onclick='sendMsg();'>
-						<img src="https://galb-dev.truecorp.co.th/iservice/img/cursor.png"/ class="imgsend">
+						<img src="https://galb.truecorp.co.th/iservice/img/cursor.png"/ class="imgsend">
 					</button>
 				</span>
 			</div>

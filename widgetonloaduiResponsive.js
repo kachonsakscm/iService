@@ -24,6 +24,7 @@
 	var dateold = "";
 	var SplashMessagefrist = true;
 	var viewhistory = false;
+	var checkloophistory;
 	
 	
 	window.onload = function() {
@@ -752,13 +753,13 @@
 					console.log("search : ",msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]));
 					if(msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]) == 0  && SplashMessagefrist == true)
 					{
-						 alert("เข้า SplashMessagefrist");
+						 // alert("เข้า SplashMessagefrist");
 						createMessage(wgMsgMariload,msg,timeM);
 						SplashMessagefrist = false;				
 					}
 					else if(msg.search(wgSystem[wgLanguage]["messageresponse"]["SplashMessage"]) != 0 && SplashMessagefrist == false)
 					{
-						 alert("เข้า SplashMessagenotfrist");
+						 // alert("เข้า SplashMessagenotfrist");
 						createMessage(wgMsgMariload,msg,timeM);
 					}							
 				}

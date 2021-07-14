@@ -928,7 +928,7 @@ Chat.createAPIv2 = function(config) {
         },
 		
    chathisrotyview: function(message) {
-			viewhistory = false;
+			
 			var me = this;
 			var url = urlchathisrotyview+'/?History='+rehistory;
 			const request = new XMLHttpRequest();
@@ -983,7 +983,14 @@ Chat.createAPIv2 = function(config) {
 					}
 				}
 			}
-			request.send();
+			if(viewhistory == true)
+			{
+				request.send();
+				checkloophistory = setTimeout(function(){
+				viewhistory = false;
+				},1000);
+			}
+			
 			
         },
 		
@@ -1024,8 +1031,11 @@ Chat.createAPIv2 = function(config) {
 						tokenhistory = oo.token;
 						if(expirytoken == true)
 						{
+							viewhistory = false;
+							clearTimeout(checkloophistory); 
 							stephistory();
 							expirytoken = false;
+							 
 						}
 					}
 				}
